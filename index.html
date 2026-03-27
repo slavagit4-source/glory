@@ -95,40 +95,6 @@
             overflow: hidden;
         }
 
-        /* Меню */
-        .menu-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-primary);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            transition: transform 0.3s ease;
-        }
-        .menu-screen.hide {
-            transform: translateX(-100%);
-        }
-        
-        .menu-card {
-            background: var(--bg-secondary);
-            border-radius: 48px;
-            padding: 40px;
-            width: 85%;
-            max-width: 350px;
-            text-align: center;
-        }
-        .menu-logo { font-size: 3rem; margin-bottom: 20px; }
-        .menu-title { font-size: 1.8rem; font-weight: 700; color: var(--accent-color); margin-bottom: 8px; }
-        .menu-subtitle { color: var(--text-secondary); margin-bottom: 30px; }
-        .menu-buttons { display: flex; flex-direction: column; gap: 12px; }
-        .menu-btn { padding: 16px; border-radius: 40px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; background: var(--accent-color); color: white; }
-        .menu-btn.secondary { background: var(--bg-input); color: var(--text-primary); border: 1px solid var(--border-color); }
-        
         /* Панель контактов */
         .contacts-panel {
             width: 320px;
@@ -248,7 +214,7 @@
         .chat-name-header { font-weight: 600; color: var(--text-primary); font-size: 1rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .view-profile-in-chat { font-size: 0.6rem; color: var(--accent-color); background: var(--bg-input); padding: 4px 8px; border-radius: 20px; cursor: pointer; }
 
-        /* Сообщения и поле ввода - нормальный скролл */
+        /* Сообщения - правильная прокрутка */
         .messages-area {
             flex: 1;
             overflow-y: auto;
@@ -383,21 +349,10 @@
         }
     }
     
-    // Навигация
-    function showMenu() {
-        const menu = document.querySelector('.menu-screen');
-        const contacts = document.querySelector('.contacts-panel');
-        const chat = document.querySelector('.chat-panel');
-        if (menu) menu.classList.remove('hide');
-        if (contacts) contacts.classList.add('hide');
-        if (chat) chat.classList.add('hide');
-    }
-    
+    // Показ контактов сразу
     function showContacts() {
-        const menu = document.querySelector('.menu-screen');
         const contacts = document.querySelector('.contacts-panel');
         const chat = document.querySelector('.chat-panel');
-        if (menu) menu.classList.add('hide');
         if (contacts) contacts.classList.remove('hide');
         if (chat) chat.classList.add('hide');
     }
@@ -1203,18 +1158,7 @@
         
         root.innerHTML = `
             <div class="app">
-                <div class="menu-screen">
-                    <div class="menu-card">
-                        <div class="menu-logo">✨</div>
-                        <div class="menu-title">GLORY</div>
-                        <div class="menu-subtitle">Быстрый мессенджер</div>
-                        <div class="menu-buttons">
-                            <button class="menu-btn" id="startBtn">🚀 Начать общение</button>
-                            <button class="menu-btn secondary" id="profileBtn">👤 Мой профиль</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="contacts-panel hide">
+                <div class="contacts-panel">
                     <div class="contacts-header">
                         <div class="user-card" id="profileCard">
                             <div class="user-avatar" id="userAvatar">${currentUser.name.charAt(0).toUpperCase()}</div>
@@ -1248,7 +1192,7 @@
                         </div>
                     </div>
                     <div class="messages-area" id="messagesArea">
-                        <div id="messagesContainer" class="messages-container"></div>
+                        <div id="messagesContainer"></div>
                     </div>
                     <div class="input-area">
                         <button class="attach-btn" id="attachBtn" disabled>📎</button>
@@ -1269,11 +1213,11 @@
         });
         
         // Обработчики событий
-        document.getElementById('startBtn')?.addEventListener('click', showContacts);
-        document.getElementById('profileBtn')?.addEventListener('click', () => showProfile(currentUser.id, true));
         document.getElementById('viewMyProfileBtn')?.addEventListener('click', () => showProfile(currentUser.id, true));
         document.getElementById('profileCard')?.addEventListener('click', () => showProfile(currentUser.id, true));
-        document.getElementById('exitContactsBtn')?.addEventListener('click', showMenu);
+        document.getElementById('exitContactsBtn')?.addEventListener('click', () => {
+            window.location.reload();
+        });
         document.getElementById('backToContactsBtn')?.addEventListener('click', showContacts);
         document.getElementById('logoutBtn')?.addEventListener('click', logout);
         document.getElementById('sendBtn')?.addEventListener('click', sendMessage);
@@ -1300,7 +1244,7 @@
         
         loadContactsAndChats();
         setTab('chats');
-        showMenu();
+        showContacts();
         
         const savedChat = localStorage.getItem('glory_activeChat');
         if (savedChat) {
