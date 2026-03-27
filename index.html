@@ -95,7 +95,6 @@
             overflow: hidden;
         }
 
-        /* Панель контактов */
         .contacts-panel {
             width: 320px;
             background: var(--bg-secondary);
@@ -187,7 +186,6 @@
         .call-btn { background: var(--success); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
         .delete-chat-btn { background: none; border: none; color: var(--danger); cursor: pointer; padding: 8px; font-size: 1rem; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-        /* Чат панель - фиксированная структура */
         .chat-panel {
             flex: 1;
             display: flex;
@@ -214,7 +212,6 @@
         .chat-name-header { font-weight: 600; color: var(--text-primary); font-size: 1rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .view-profile-in-chat { font-size: 0.6rem; color: var(--accent-color); background: var(--bg-input); padding: 4px 8px; border-radius: 20px; cursor: pointer; }
 
-        /* Область сообщений - скроллится */
         .messages-area {
             flex: 1;
             overflow-y: auto;
@@ -236,7 +233,6 @@
         .message-sender { font-size: 0.6rem; margin-bottom: 4px; opacity: 0.7; }
         .message-time { font-size: 0.5rem; opacity: 0.5; margin-top: 4px; text-align: right; }
 
-        /* Поле ввода - фиксировано внизу, не скроллится */
         .input-area {
             padding: 10px 12px;
             background: var(--bg-tertiary);
@@ -246,60 +242,12 @@
             align-items: flex-end;
             flex-shrink: 0;
         }
-        .attach-btn { 
-            background: var(--bg-input); 
-            border: 1px solid var(--border-color); 
-            border-radius: 50%; 
-            width: 44px; 
-            height: 44px; 
-            font-size: 1.2rem; 
-            cursor: pointer; 
-            color: var(--text-secondary); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            flex-shrink: 0;
-            transition: 0.1s;
-        }
-        .attach-btn:active { transform: scale(0.95); }
-        
-        .msg-input { 
-            flex: 1; 
-            padding: 12px 16px; 
-            background: var(--bg-input); 
-            border: 1px solid var(--border-color); 
-            border-radius: 24px; 
-            font-size: 0.95rem; 
-            color: var(--text-primary); 
-            outline: none; 
-            resize: none; 
-            max-height: 100px; 
-            font-family: inherit; 
-            line-height: 1.4;
-            transition: none;
-        }
+        .attach-btn { background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 50%; width: 44px; height: 44px; font-size: 1.2rem; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .msg-input { flex: 1; padding: 12px 16px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 24px; font-size: 0.95rem; color: var(--text-primary); outline: none; resize: none; max-height: 100px; font-family: inherit; line-height: 1.4; }
         .msg-input:focus { border-color: var(--accent-color); }
-        
-        .send-btn { 
-            background: var(--accent-color); 
-            border: none; 
-            color: white; 
-            width: 44px; 
-            height: 44px; 
-            border-radius: 50%; 
-            font-size: 1.2rem; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            flex-shrink: 0;
-            transition: 0.1s;
-        }
-        .send-btn:active { transform: scale(0.95); }
-        
+        .send-btn { background: var(--accent-color); border: none; color: white; width: 44px; height: 44px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .empty-chat, .empty-contacts { text-align: center; color: var(--text-secondary); padding: 40px; }
 
-        /* Модалка профиля */
         .profile-modal {
             position: fixed;
             top: 0;
@@ -338,7 +286,6 @@
             .message { max-width: 85%; }
             .call-btn, .delete-chat-btn { width: 44px; height: 44px; }
             .input-area { padding: 8px 12px; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
-            .attach-btn, .send-btn { width: 44px; height: 44px; }
         }
 
         .login-screen { display: flex; align-items: center; justify-content: center; height: 100vh; background: var(--bg-primary); }
@@ -376,7 +323,10 @@
         firebase.initializeApp(FIREBASE_CONFIG);
         db = firebase.database();
         storage = firebase.storage();
-    } catch(e) {}
+        console.log('✅ Firebase готов');
+    } catch(e) {
+        console.error('Firebase error:', e);
+    }
 
     let currentUser = null;
     let activeChat = null;
@@ -389,7 +339,6 @@
     
     const root = document.getElementById('root');
     
-    // Прокрутка вниз
     function scrollToBottom() {
         const messagesArea = document.getElementById('messagesArea');
         if (messagesArea) {
@@ -397,7 +346,6 @@
         }
     }
     
-    // Проверка имени
     async function isNameTaken(name) {
         if (!db) return false;
         const snapshot = await db.ref('users').orderByChild('name').equalTo(name).once('value');
@@ -405,17 +353,20 @@
     }
     
     function showContacts() {
-        document.querySelector('.contacts-panel')?.classList.remove('hide');
-        document.querySelector('.chat-panel')?.classList.add('hide');
+        const contactsPanel = document.querySelector('.contacts-panel');
+        const chatPanel = document.querySelector('.chat-panel');
+        if (contactsPanel) contactsPanel.classList.remove('hide');
+        if (chatPanel) chatPanel.classList.add('hide');
     }
     
     function showChat() {
-        document.querySelector('.contacts-panel')?.classList.add('hide');
-        document.querySelector('.chat-panel')?.classList.remove('hide');
+        const contactsPanel = document.querySelector('.contacts-panel');
+        const chatPanel = document.querySelector('.chat-panel');
+        if (contactsPanel) contactsPanel.classList.add('hide');
+        if (chatPanel) chatPanel.classList.remove('hide');
         setTimeout(scrollToBottom, 100);
     }
     
-    // Профиль
     async function showProfile(userId, isOwn = false) {
         const userSnap = await db.ref(`users/${userId}`).once('value');
         const user = userSnap.val();
@@ -472,7 +423,9 @@
         }
         
         const closeBtn = document.getElementById('closeProfileBtn');
-        if (closeBtn) closeBtn.onclick = () => modal.remove();
+        if (closeBtn) {
+            closeBtn.onclick = () => modal.remove();
+        }
     }
     
     async function changeAvatar() {
@@ -497,12 +450,15 @@
         input.click();
     }
     
-    // Основные функции
     function setTheme(theme) {
         document.body.className = theme + '-theme';
         localStorage.setItem('glory_theme', theme);
         document.querySelectorAll('.theme-option').forEach(opt => {
-            opt.classList.toggle('active', opt.dataset.theme === theme);
+            if (opt.dataset.theme === theme) {
+                opt.classList.add('active');
+            } else {
+                opt.classList.remove('active');
+            }
         });
     }
     
@@ -559,16 +515,23 @@
         };
         
         let path = '';
-        if (activeChatType === 'user') path = `messages/${getDialogId(currentUser.id, activeChat)}`;
-        else if (activeChatType === 'group') path = `groupMessages/${activeChat}`;
-        else if (activeChatType === 'channel') path = `channelMessages/${activeChat}`;
+        if (activeChatType === 'user') {
+            path = `messages/${getDialogId(currentUser.id, activeChat)}`;
+        } else if (activeChatType === 'group') {
+            path = `groupMessages/${activeChat}`;
+        } else if (activeChatType === 'channel') {
+            path = `channelMessages/${activeChat}`;
+        }
         
         try {
             await db.ref(path).push(message);
             input.value = '';
             autoResizeTextarea(input);
             scrollToBottom();
-        } catch(e) { alert('Ошибка отправки'); }
+        } catch(e) { 
+            console.error(e);
+            alert('Ошибка отправки'); 
+        }
     }
     
     function autoResizeTextarea(textarea) {
@@ -577,7 +540,10 @@
     }
     
     async function attachImage() {
-        if (!activeChat) { alert('Сначала выберите чат'); return; }
+        if (!activeChat) { 
+            alert('Сначала выберите чат'); 
+            return; 
+        }
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = 'image/*';
@@ -617,9 +583,13 @@
                     };
                     
                     let path = '';
-                    if (activeChatType === 'user') path = `messages/${getDialogId(currentUser.id, activeChat)}`;
-                    else if (activeChatType === 'group') path = `groupMessages/${activeChat}`;
-                    else if (activeChatType === 'channel') path = `channelMessages/${activeChat}`;
+                    if (activeChatType === 'user') {
+                        path = `messages/${getDialogId(currentUser.id, activeChat)}`;
+                    } else if (activeChatType === 'group') {
+                        path = `groupMessages/${activeChat}`;
+                    } else if (activeChatType === 'channel') {
+                        path = `channelMessages/${activeChat}`;
+                    }
                     
                     await db.ref(path).push(message);
                     modal.remove();
@@ -636,20 +606,30 @@
     }
     
     function loadMessages() {
-        if (currentMessagesRef) currentMessagesRef.off();
+        if (currentMessagesRef) {
+            currentMessagesRef.off();
+            currentMessagesRef = null;
+        }
+        
         if (!activeChat || !activeChatType) return;
         
         let path = '';
-        if (activeChatType === 'user') path = `messages/${getDialogId(currentUser.id, activeChat)}`;
-        else if (activeChatType === 'group') path = `groupMessages/${activeChat}`;
-        else if (activeChatType === 'channel') path = `channelMessages/${activeChat}`;
+        if (activeChatType === 'user') {
+            path = `messages/${getDialogId(currentUser.id, activeChat)}`;
+        } else if (activeChatType === 'group') {
+            path = `groupMessages/${activeChat}`;
+        } else if (activeChatType === 'channel') {
+            path = `channelMessages/${activeChat}`;
+        }
         
         const messagesRef = db.ref(path);
         currentMessagesRef = messagesRef;
         
         messagesRef.on('value', (snapshot) => {
             const messages = [];
-            snapshot.forEach(child => messages.push(child.val()));
+            snapshot.forEach(child => {
+                messages.push(child.val());
+            });
             messages.sort((a, b) => a.timestamp - b.timestamp);
             renderMessages(messages);
             scrollToBottom();
@@ -659,7 +639,11 @@
     function renderMessages(messages) {
         const container = document.getElementById('messagesContainer');
         if (!container) return;
-        if (!messages.length) { container.innerHTML = '<div class="empty-chat">💬 Напишите первое сообщение</div>'; return; }
+        
+        if (!messages.length) {
+            container.innerHTML = '<div class="empty-chat">💬 Напишите первое сообщение</div>';
+            return;
+        }
         
         let html = '';
         for (const msg of messages) {
@@ -683,28 +667,39 @@
             snapshot.forEach(dialog => {
                 const parts = dialog.key.split('_');
                 if (!parts.includes(currentUser.id)) return;
-                contactsMap.set(parts[0] === currentUser.id ? parts[1] : parts[0], true);
+                const contactId = parts[0] === currentUser.id ? parts[1] : parts[0];
+                contactsMap.set(contactId, true);
             });
+            
             const newContacts = [];
-            for (const [cid] of contactsMap) newContacts.push({ id: cid, name: await getUserName(cid), type: 'user' });
+            for (const [cid] of contactsMap) {
+                const name = await getUserName(cid);
+                newContacts.push({ id: cid, name: name, type: 'user' });
+            }
             contacts = newContacts;
             renderAllChats();
         });
         
         db.ref(`userGroups/${currentUser.id}`).on('value', async (snapshot) => {
             groups = [];
-            for (const groupId of Object.keys(snapshot.val() || {})) {
+            const data = snapshot.val() || {};
+            for (const groupId of Object.keys(data)) {
                 const groupSnap = await db.ref(`groups/${groupId}`).once('value');
-                if (groupSnap.exists()) groups.push({ ...groupSnap.val(), type: 'group' });
+                if (groupSnap.exists()) {
+                    groups.push({ ...groupSnap.val(), type: 'group' });
+                }
             }
             renderAllChats();
         });
         
         db.ref(`userChannels/${currentUser.id}`).on('value', async (snapshot) => {
             channels = [];
-            for (const channelId of Object.keys(snapshot.val() || {})) {
+            const data = snapshot.val() || {};
+            for (const channelId of Object.keys(data)) {
                 const channelSnap = await db.ref(`channels/${channelId}`).once('value');
-                if (channelSnap.exists()) channels.push({ ...channelSnap.val(), type: 'channel' });
+                if (channelSnap.exists()) {
+                    channels.push({ ...channelSnap.val(), type: 'channel' });
+                }
             }
             renderAllChats();
         });
@@ -713,6 +708,7 @@
     function renderAllChats() {
         const container = document.getElementById('contactsList');
         if (!container) return;
+        
         let html = '';
         
         if (currentTab === 'chats') {
@@ -728,9 +724,9 @@
                                 <div class="view-contact-profile" onclick="event.stopPropagation(); showProfile('${contact.id}', false)">👤 Профиль</div>
                             </div>
                             <div class="call-btns">
-                                <button class="call-btn" onclick="event.stopPropagation(); alert('Звонок в разработке')">📹</button>
-                                <button class="call-btn" onclick="event.stopPropagation(); alert('Звонок в разработке')">🎤</button>
-                                <button class="delete-chat-btn" onclick="event.stopPropagation(); deleteContact('${contact.id}')">🗑️</button>
+                                <button class="call-btn" onclick="event.stopPropagation(); alert('Звонок в разработке')" title="Видеозвонок">📹</button>
+                                <button class="call-btn" onclick="event.stopPropagation(); alert('Звонок в разработке')" title="Аудиозвонок">🎤</button>
+                                <button class="delete-chat-btn" onclick="event.stopPropagation(); deleteContact('${contact.id}')" title="Удалить">🗑️</button>
                             </div>
                         </div>
                     `;
@@ -741,7 +737,14 @@
                 html += '<div class="section-title">👥 ГРУППЫ</div>';
                 for (const group of groups) {
                     const isActive = (activeChat === group.id && activeChatType === 'group');
-                    html += `<div class="chat-item ${isActive ? 'active' : ''}" onclick="selectContact('${group.id}', 'group')"><div class="chat-avatar">👥</div><div class="chat-info"><div class="chat-name">${escapeHtml(group.name)}</div></div></div>`;
+                    html += `
+                        <div class="chat-item ${isActive ? 'active' : ''}" onclick="selectContact('${group.id}', 'group')">
+                            <div class="chat-avatar">👥</div>
+                            <div class="chat-info">
+                                <div class="chat-name">${escapeHtml(group.name)}</div>
+                            </div>
+                        </div>
+                    `;
                 }
             }
             
@@ -749,14 +752,22 @@
                 html += '<div class="section-title">📢 КАНАЛЫ</div>';
                 for (const channel of channels) {
                     const isActive = (activeChat === channel.id && activeChatType === 'channel');
-                    html += `<div class="chat-item ${isActive ? 'active' : ''}" onclick="selectContact('${channel.id}', 'channel')"><div class="chat-avatar">📢</div><div class="chat-info"><div class="chat-name">${escapeHtml(channel.name)}</div></div></div>`;
+                    html += `
+                        <div class="chat-item ${isActive ? 'active' : ''}" onclick="selectContact('${channel.id}', 'channel')">
+                            <div class="chat-avatar">📢</div>
+                            <div class="chat-info">
+                                <div class="chat-name">${escapeHtml(channel.name)}</div>
+                            </div>
+                        </div>
+                    `;
                 }
             }
             
             if (contacts.length === 0 && groups.length === 0 && channels.length === 0) {
-                html = '<div class="empty-contacts">✨ Нет чатов</div>';
+                html = '<div class="empty-contacts">✨ Нет чатов. Начните общение или создайте группу/канал</div>';
             }
         }
+        
         container.innerHTML = html;
     }
     
@@ -770,7 +781,10 @@
                 if (await userExists(chatId)) {
                     contact = { id: chatId, name: await getUserName(chatId), type: 'user' };
                     contacts.push(contact);
-                } else { alert('Пользователь не найден'); return; }
+                } else { 
+                    alert('Пользователь не найден'); 
+                    return; 
+                }
             }
             name = contact.name;
         } else if (type === 'group') {
@@ -786,6 +800,7 @@
         activeChat = chatId;
         activeChatType = type;
         localStorage.setItem('glory_activeChat', JSON.stringify({ id: chatId, type }));
+        
         renderAllChats();
         
         const header = document.getElementById('chatHeader');
@@ -801,7 +816,10 @@
                     <div class="chat-desc">${type === 'user' ? 'Личный чат' : type === 'group' ? 'Группа' : 'Канал'}</div>
                 </div>
             `;
-            document.getElementById('backToContactsBtn').onclick = () => showContacts();
+            const backBtn = document.getElementById('backToContactsBtn');
+            if (backBtn) {
+                backBtn.onclick = () => showContacts();
+            }
         }
         
         loadMessages();
@@ -810,7 +828,12 @@
         const input = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
         const attachBtn = document.getElementById('attachBtn');
-        if (input) { input.disabled = false; input.placeholder = `Сообщение в ${name}...`; input.focus(); }
+        
+        if (input) { 
+            input.disabled = false; 
+            input.placeholder = `Сообщение в ${name}...`; 
+            input.focus();
+        }
         if (sendBtn) sendBtn.disabled = false;
         if (attachBtn) attachBtn.disabled = false;
     };
@@ -821,10 +844,14 @@
             if (activeChat === contactId && activeChatType === 'user') {
                 activeChat = null;
                 activeChatType = null;
-                document.getElementById('messagesContainer').innerHTML = '<div class="empty-chat">💬 Выберите чат</div>';
-                document.getElementById('messageInput').disabled = true;
-                document.getElementById('sendBtn').disabled = true;
-                document.getElementById('attachBtn').disabled = true;
+                const container = document.getElementById('messagesContainer');
+                if (container) container.innerHTML = '<div class="empty-chat">💬 Выберите чат</div>';
+                const input = document.getElementById('messageInput');
+                const sendBtn = document.getElementById('sendBtn');
+                const attachBtn = document.getElementById('attachBtn');
+                if (input) input.disabled = true;
+                if (sendBtn) sendBtn.disabled = true;
+                if (attachBtn) attachBtn.disabled = true;
                 showContacts();
             }
             renderAllChats();
@@ -835,47 +862,83 @@
         const input = document.getElementById('searchInput');
         const feedback = document.getElementById('searchFeedback');
         const val = input.value.trim();
-        if (!val) { feedback.textContent = '❌ Введите ID'; return; }
-        if (val === currentUser.id) { feedback.textContent = '❌ Нельзя добавить себя'; return; }
+        
+        if (!val) { 
+            feedback.textContent = '❌ Введите ID'; 
+            return; 
+        }
+        if (val === currentUser.id) { 
+            feedback.textContent = '❌ Нельзя добавить себя'; 
+            return; 
+        }
+        
         feedback.textContent = '🔍 Поиск...';
         const exists = await userExists(val);
-        if (!exists) { feedback.textContent = `❌ Пользователь ${val} не найден`; return; }
+        if (!exists) { 
+            feedback.textContent = `❌ Пользователь ${val} не найден`; 
+            return; 
+        }
+        
         const name = await getUserName(val);
-        if (!contacts.find(c => c.id === val)) contacts.push({ id: val, name, type: 'user' });
+        if (!contacts.find(c => c.id === val)) {
+            contacts.push({ id: val, name: name, type: 'user' });
+        }
         feedback.textContent = `✅ ${name} добавлен!`;
         renderAllChats();
         input.value = '';
-        setTimeout(() => feedback.textContent = '', 2000);
+        setTimeout(() => {
+            if (feedback) feedback.textContent = '';
+        }, 2000);
     }
     
     async function createGroup(name, description) {
         const groupId = generateChatId();
-        await db.ref(`groups/${groupId}`).set({ id: groupId, name, description, creator: currentUser.id, members: [currentUser.id] });
+        await db.ref(`groups/${groupId}`).set({ 
+            id: groupId, 
+            name: name, 
+            description: description, 
+            creator: currentUser.id, 
+            members: [currentUser.id] 
+        });
         await db.ref(`userGroups/${currentUser.id}/${groupId}`).set(true);
         return groupId;
     }
     
     async function createChannel(name, description) {
         const channelId = generateChatId();
-        await db.ref(`channels/${channelId}`).set({ id: channelId, name, description, creator: currentUser.id, members: [currentUser.id] });
+        await db.ref(`channels/${channelId}`).set({ 
+            id: channelId, 
+            name: name, 
+            description: description, 
+            creator: currentUser.id, 
+            members: [currentUser.id] 
+        });
         await db.ref(`userChannels/${currentUser.id}/${channelId}`).set(true);
         return channelId;
     }
     
     async function joinGroup(groupId) {
         const group = await db.ref(`groups/${groupId}`).once('value');
-        if (group.exists()) { await db.ref(`userGroups/${currentUser.id}/${groupId}`).set(true); return true; }
+        if (group.exists()) {
+            await db.ref(`userGroups/${currentUser.id}/${groupId}`).set(true);
+            return true;
+        }
         return false;
     }
     
     async function joinChannel(channelId) {
         const channel = await db.ref(`channels/${channelId}`).once('value');
-        if (channel.exists()) { await db.ref(`userChannels/${currentUser.id}/${channelId}`).set(true); return true; }
+        if (channel.exists()) {
+            await db.ref(`userChannels/${currentUser.id}/${channelId}`).set(true);
+            return true;
+        }
         return false;
     }
     
     function logout() {
-        if (currentMessagesRef) currentMessagesRef.off();
+        if (currentMessagesRef) {
+            currentMessagesRef.off();
+        }
         localStorage.clear();
         currentUser = null;
         showLogin();
@@ -884,18 +947,41 @@
     function setTab(tab) {
         currentTab = tab;
         const tabContent = document.getElementById('tabContent');
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            if (btn.dataset.tab === tab) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+        
         if (tab === 'chats') {
             tabContent.innerHTML = '<div class="contacts-list" id="contactsList"></div>';
             renderAllChats();
         } else {
             tabContent.innerHTML = `
-                <div class="search-section"><div class="search-title">🔍 НАЙТИ ПОЛЬЗОВАТЕЛЯ</div><div class="search-box"><input type="text" id="searchInput" placeholder="Введите ID"><button id="searchBtn">Найти</button></div><div class="search-feedback" id="searchFeedback"></div></div>
-                <div class="search-section"><button class="create-btn" id="createGroupBtn">+ Создать группу</button></div>
-                <div class="search-section"><button class="create-btn" id="createChannelBtn">+ Создать канал</button></div>
-                <div class="search-section"><button class="create-btn" id="joinGroupBtn">🔗 Вступить в группу по ID</button></div>
-                <div class="search-section"><button class="create-btn" id="joinChannelBtn">🔗 Подписаться на канал по ID</button></div>
+                <div class="search-section">
+                    <div class="search-title">🔍 НАЙТИ ПОЛЬЗОВАТЕЛЯ</div>
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Введите ID">
+                        <button id="searchBtn">Найти</button>
+                    </div>
+                    <div class="search-feedback" id="searchFeedback"></div>
+                </div>
+                <div class="search-section">
+                    <button class="create-btn" id="createGroupBtn">+ Создать группу</button>
+                </div>
+                <div class="search-section">
+                    <button class="create-btn" id="createChannelBtn">+ Создать канал</button>
+                </div>
+                <div class="search-section">
+                    <button class="create-btn" id="joinGroupBtn">🔗 Вступить в группу по ID</button>
+                </div>
+                <div class="search-section">
+                    <button class="create-btn" id="joinChannelBtn">🔗 Подписаться на канал по ID</button>
+                </div>
             `;
+            
             document.getElementById('searchBtn')?.addEventListener('click', searchAndAddUser);
             document.getElementById('createGroupBtn')?.addEventListener('click', () => showCreateModal('group'));
             document.getElementById('createChannelBtn')?.addEventListener('click', () => showCreateModal('channel'));
@@ -907,14 +993,31 @@
     function showCreateModal(type) {
         const modal = document.createElement('div');
         modal.className = 'profile-modal';
-        modal.innerHTML = `<div class="profile-card"><h3>${type === 'group' ? 'Создать группу' : 'Создать канал'}</h3><input type="text" id="createName" placeholder="Название"><input type="text" id="createDesc" placeholder="Описание"><div class="profile-buttons"><button class="btn-primary" id="confirmCreate">Создать</button><button class="btn-close" id="cancelCreate">Отмена</button></div></div>`;
+        modal.innerHTML = `
+            <div class="profile-card">
+                <h3>${type === 'group' ? 'Создать группу' : 'Создать канал'}</h3>
+                <input type="text" id="createName" placeholder="Название">
+                <input type="text" id="createDesc" placeholder="Описание">
+                <div class="profile-buttons">
+                    <button class="btn-primary" id="confirmCreate">Создать</button>
+                    <button class="btn-close" id="cancelCreate">Отмена</button>
+                </div>
+            </div>
+        `;
         document.body.appendChild(modal);
+        
         document.getElementById('confirmCreate').onclick = async () => {
             const name = document.getElementById('createName').value.trim();
-            if (!name) { alert('Введите название'); return; }
+            if (!name) { 
+                alert('Введите название'); 
+                return; 
+            }
             const desc = document.getElementById('createDesc').value.trim();
-            if (type === 'group') await createGroup(name, desc);
-            else await createChannel(name, desc);
+            if (type === 'group') {
+                await createGroup(name, desc);
+            } else {
+                await createChannel(name, desc);
+            }
             modal.remove();
             alert(`✅ ${type === 'group' ? 'Группа' : 'Канал'} "${name}" создан!`);
         };
@@ -924,24 +1027,61 @@
     function showJoinModal(type) {
         const modal = document.createElement('div');
         modal.className = 'profile-modal';
-        modal.innerHTML = `<div class="profile-card"><h3>${type === 'group' ? 'Вступить в группу' : 'Подписаться на канал'}</h3><input type="text" id="joinId" placeholder="ID"><div class="profile-buttons"><button class="btn-primary" id="confirmJoin">${type === 'group' ? 'Вступить' : 'Подписаться'}</button><button class="btn-close" id="cancelJoin">Отмена</button></div></div>`;
+        modal.innerHTML = `
+            <div class="profile-card">
+                <h3>${type === 'group' ? 'Вступить в группу' : 'Подписаться на канал'}</h3>
+                <input type="text" id="joinId" placeholder="ID">
+                <div class="profile-buttons">
+                    <button class="btn-primary" id="confirmJoin">${type === 'group' ? 'Вступить' : 'Подписаться'}</button>
+                    <button class="btn-close" id="cancelJoin">Отмена</button>
+                </div>
+            </div>
+        `;
         document.body.appendChild(modal);
+        
         document.getElementById('confirmJoin').onclick = async () => {
             const id = document.getElementById('joinId').value.trim();
-            if (!id) { alert('Введите ID'); return; }
+            if (!id) { 
+                alert('Введите ID'); 
+                return; 
+            }
             const success = type === 'group' ? await joinGroup(id) : await joinChannel(id);
-            if (success) { modal.remove(); alert(`✅ ${type === 'group' ? 'Вы вступили в группу!' : 'Вы подписались на канал!'}`); }
-            else alert(`❌ ${type === 'group' ? 'Группа' : 'Канал'} не найден`);
+            if (success) { 
+                modal.remove(); 
+                alert(`✅ ${type === 'group' ? 'Вы вступили в группу!' : 'Вы подписались на канал!'}`); 
+            } else {
+                alert(`❌ ${type === 'group' ? 'Группа' : 'Канал'} не найден`);
+            }
         };
         document.getElementById('cancelJoin').onclick = () => modal.remove();
     }
     
     function showLogin() {
         root.innerHTML = `
-            <div class="login-screen"><div class="login-card"><h1>GLORY</h1><p>Быстрый мессенджер</p>
-            <div class="login-tabs"><div class="login-tab active" data-tab="new" onclick="setLoginTab('new')">🆕 Новый ID</div><div class="login-tab" data-tab="existing" onclick="setLoginTab('existing')">🔑 Войти по ID</div></div>
-            <div id="newIdSection"><input type="text" id="loginName" placeholder="Ваше имя"><div id="nameError" class="name-error"></div><div class="id-row"><input type="text" id="loginId" readonly><button id="genIdBtn">🔄</button></div><button class="login-btn" id="loginBtn">Создать аккаунт</button></div>
-            <div id="existingIdSection" style="display: none;"><input type="text" id="existingIdInput" placeholder="Ваш ID"><input type="text" id="existingNameInput" placeholder="Ваше имя"><button class="login-btn" id="loginExistingBtn">Войти</button></div></div></div>
+            <div class="login-screen">
+                <div class="login-card">
+                    <h1>GLORY</h1>
+                    <p>Быстрый мессенджер</p>
+                    <div class="login-tabs">
+                        <div class="login-tab active" data-tab="new" onclick="setLoginTab('new')">🆕 Новый ID</div>
+                        <div class="login-tab" data-tab="existing" onclick="setLoginTab('existing')">🔑 Войти по ID</div>
+                    </div>
+                    <div id="newIdSection">
+                        <input type="text" id="loginName" placeholder="Ваше имя">
+                        <div id="nameError" class="name-error"></div>
+                        <div class="id-row">
+                            <input type="text" id="loginId" readonly>
+                            <button id="genIdBtn">🔄</button>
+                        </div>
+                        <button class="login-btn" id="loginBtn">Создать аккаунт</button>
+                    </div>
+                    <div id="existingIdSection" style="display: none;">
+                        <input type="text" id="existingIdInput" placeholder="Ваш ID">
+                        <input type="text" id="existingNameInput" placeholder="Ваше имя">
+                        <button class="login-btn" id="loginExistingBtn">Войти</button>
+                    </div>
+                </div>
+            </div>
         `;
         
         const idInput = document.getElementById('loginId');
@@ -949,43 +1089,96 @@
         
         const nameInput = document.getElementById('loginName');
         const nameError = document.getElementById('nameError');
+        
         if (nameInput) {
             nameInput.addEventListener('input', async () => {
                 const name = nameInput.value.trim();
-                if (name.length < 2) { nameError.textContent = ''; return; }
+                if (name.length < 2) {
+                    nameError.textContent = '';
+                    return;
+                }
                 const taken = await isNameTaken(name);
-                if (taken) nameError.textContent = '❌ Это имя уже занято!';
-                else { nameError.textContent = '✅ Имя свободно'; nameError.style.color = 'var(--success)'; }
+                if (taken) {
+                    nameError.textContent = '❌ Это имя уже занято!';
+                    nameError.style.color = 'var(--danger)';
+                } else {
+                    nameError.textContent = '✅ Имя свободно';
+                    nameError.style.color = 'var(--success)';
+                }
             });
         }
         
-        document.getElementById('genIdBtn').onclick = () => { const idInput = document.getElementById('loginId'); if (idInput) idInput.value = generateId(); };
+        document.getElementById('genIdBtn').onclick = () => {
+            const idInput = document.getElementById('loginId');
+            if (idInput) idInput.value = generateId();
+        };
+        
         document.getElementById('loginBtn').onclick = async () => {
             const name = document.getElementById('loginName').value.trim();
             const uid = document.getElementById('loginId').value.trim();
-            if (!name) { alert('Введите имя'); return; }
-            if (await isNameTaken(name)) { alert('❌ Это имя уже занято!'); return; }
-            if (await userExists(uid)) { alert(`ID ${uid} занят`); document.getElementById('loginId').value = generateId(); return; }
+            
+            if (!name) { 
+                alert('Введите имя'); 
+                return; 
+            }
+            
+            const taken = await isNameTaken(name);
+            if (taken) {
+                alert('❌ Это имя уже занято! Выберите другое');
+                return;
+            }
+            
+            if (await userExists(uid)) { 
+                alert(`ID ${uid} занят`); 
+                document.getElementById('loginId').value = generateId();
+                return; 
+            }
+            
             await registerUser(uid, name);
             currentUser = { id: uid, name: name };
             localStorage.setItem('gloryUser', JSON.stringify(currentUser));
             showMessenger();
         };
+        
         document.getElementById('loginExistingBtn').onclick = async () => {
             const uid = document.getElementById('existingIdInput').value.trim();
             const name = document.getElementById('existingNameInput').value.trim();
-            if (!uid || !name) { alert('Введите ID и имя'); return; }
-            if (!await userExists(uid)) { alert('❌ Пользователь не найден'); return; }
+            if (!uid || !name) { 
+                alert('Введите ID и имя'); 
+                return; 
+            }
+            const exists = await userExists(uid);
+            if (!exists) { 
+                alert('❌ Пользователь не найден'); 
+                return; 
+            }
             const userSnap = await db.ref(`users/${uid}`).once('value');
-            if (userSnap.val().name !== name) { alert('❌ Неверное имя'); return; }
+            if (userSnap.val().name !== name) { 
+                alert('❌ Неверное имя'); 
+                return; 
+            }
             currentUser = { id: uid, name: name };
             localStorage.setItem('gloryUser', JSON.stringify(currentUser));
             showMessenger();
         };
+        
         window.setLoginTab = (tab) => {
-            document.querySelectorAll('.login-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tab));
-            document.getElementById('newIdSection').style.display = tab === 'new' ? 'block' : 'none';
-            document.getElementById('existingIdSection').style.display = tab === 'existing' ? 'block' : 'none';
+            document.querySelectorAll('.login-tab').forEach(btn => {
+                if (btn.dataset.tab === tab) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            const newSection = document.getElementById('newIdSection');
+            const existingSection = document.getElementById('existingIdSection');
+            if (tab === 'new') {
+                if (newSection) newSection.style.display = 'block';
+                if (existingSection) existingSection.style.display = 'none';
+            } else {
+                if (newSection) newSection.style.display = 'none';
+                if (existingSection) existingSection.style.display = 'block';
+            }
         };
     }
     
@@ -1012,15 +1205,21 @@
                             <div class="theme-option purple" data-theme="purple" onclick="setTheme('purple')">🟣</div>
                         </div>
                         <button class="exit-contacts-btn" id="exitContactsBtn">🏠 Обновить</button>
-                        <button class="logout-btn" id="logoutBtn">🚪 Выйти</button>
+                        <button class="logout-btn" id="logoutBtn">🚪 Выйти из аккаунта</button>
                     </div>
-                    <div class="tabs"><button class="tab-btn active" data-tab="chats" onclick="setTab('chats')">💬 Чаты</button><button class="tab-btn" data-tab="search" onclick="setTab('search')">🔍 Поиск</button></div>
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="chats" onclick="setTab('chats')">💬 Чаты</button>
+                        <button class="tab-btn" data-tab="search" onclick="setTab('search')">🔍 Поиск</button>
+                    </div>
                     <div id="tabContent"><div class="contacts-list" id="contactsList"></div></div>
                 </div>
                 <div class="chat-panel hide">
                     <div class="chat-header" id="chatHeader">
                         <button class="back-to-contacts-btn" id="backToContactsBtn">←</button>
-                        <div class="chat-info-header"><div class="chat-name-header">GLORY</div><div class="chat-desc">Выберите чат</div></div>
+                        <div class="chat-info-header">
+                            <div class="chat-name-header">GLORY</div>
+                            <div class="chat-desc">Выберите чат</div>
+                        </div>
                     </div>
                     <div class="messages-area" id="messagesArea">
                         <div id="messagesContainer"></div>
@@ -1037,12 +1236,16 @@
         db.ref(`users/${currentUser.id}/avatar`).once('value', (snap) => {
             const url = snap.val();
             const avatarDiv = document.getElementById('userAvatar');
-            if (url && avatarDiv) avatarDiv.innerHTML = `<img src="${url}">`;
+            if (url && avatarDiv) {
+                avatarDiv.innerHTML = `<img src="${url}">`;
+            }
         });
         
         document.getElementById('viewMyProfileBtn')?.addEventListener('click', () => showProfile(currentUser.id, true));
         document.getElementById('profileCard')?.addEventListener('click', () => showProfile(currentUser.id, true));
-        document.getElementById('exitContactsBtn')?.addEventListener('click', () => window.location.reload());
+        document.getElementById('exitContactsBtn')?.addEventListener('click', () => {
+            window.location.reload();
+        });
         document.getElementById('backToContactsBtn')?.addEventListener('click', showContacts);
         document.getElementById('logoutBtn')?.addEventListener('click', logout);
         document.getElementById('sendBtn')?.addEventListener('click', sendMessage);
@@ -1050,8 +1253,15 @@
         
         const input = document.getElementById('messageInput');
         if (input) {
-            input.addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
-            input.addEventListener('input', function() { autoResizeTextarea(this); });
+            input.addEventListener('keypress', (e) => { 
+                if (e.key === 'Enter' && !e.shiftKey) { 
+                    e.preventDefault(); 
+                    sendMessage(); 
+                } 
+            });
+            input.addEventListener('input', function() { 
+                autoResizeTextarea(this); 
+            });
         }
         
         window.setTab = setTab;
@@ -1087,8 +1297,12 @@
         try {
             currentUser = JSON.parse(savedUser);
             showMessenger();
-        } catch(e) { showLogin(); }
-    } else { showLogin(); }
+        } catch(e) { 
+            showLogin(); 
+        }
+    } else { 
+        showLogin(); 
+    }
 </script>
 </body>
 </html>
