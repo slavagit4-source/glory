@@ -111,10 +111,7 @@
             z-index: 100;
             transition: transform 0.3s ease;
         }
-        
-        .menu-screen.hide {
-            transform: translateX(-100%);
-        }
+        .menu-screen.hide { transform: translateX(-100%); }
         
         .menu-card {
             background: var(--bg-secondary);
@@ -124,7 +121,6 @@
             max-width: 350px;
             text-align: center;
         }
-        
         .menu-logo { font-size: 3rem; margin-bottom: 20px; }
         .menu-title { font-size: 1.8rem; font-weight: 700; color: var(--accent-color); margin-bottom: 8px; }
         .menu-subtitle { color: var(--text-secondary); margin-bottom: 30px; }
@@ -220,10 +216,9 @@
         .view-contact-profile { font-size: 0.6rem; color: var(--accent-color); cursor: pointer; display: inline-block; margin-top: 2px; }
         .call-btns { display: flex; gap: 5px; }
         .call-btn { background: var(--success); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
-        .call-btn:active { transform: scale(0.95); }
         .delete-chat-btn { background: none; border: none; color: var(--danger); cursor: pointer; padding: 8px; font-size: 1rem; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-        /* Чат панель */
+        /* Чат панель - весь контент скроллится вместе с полем ввода */
         .chat-panel {
             flex: 1;
             display: flex;
@@ -250,15 +245,21 @@
         .chat-name-header { font-weight: 600; color: var(--text-primary); font-size: 1rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .view-profile-in-chat { font-size: 0.6rem; color: var(--accent-color); background: var(--bg-input); padding: 4px 8px; border-radius: 20px; cursor: pointer; }
 
-        /* Сообщения - скроллится только контент */
-        .messages-container {
+        /* Вся область сообщений + поле ввода скроллится вместе */
+        .chat-scroll-area {
             flex: 1;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Контейнер сообщений */
+        .messages-container {
+            display: flex;
+            flex-direction: column;
             padding: 16px;
             gap: 8px;
-            -webkit-overflow-scrolling: touch;
         }
 
         .message {
@@ -273,7 +274,7 @@
         .message-sender { font-size: 0.6rem; margin-bottom: 4px; opacity: 0.7; }
         .message-time { font-size: 0.5rem; opacity: 0.5; margin-top: 4px; text-align: right; }
 
-        /* Поле ввода - всегда внизу */
+        /* Поле ввода - внутри скролл-зоны, скроллится вместе с сообщениями */
         .input-area {
             padding: 10px 12px;
             background: var(--bg-tertiary);
@@ -282,6 +283,7 @@
             gap: 8px;
             align-items: flex-end;
             flex-shrink: 0;
+            margin-top: auto;
         }
         .attach-btn { background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 50%; width: 44px; height: 44px; font-size: 1.2rem; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .msg-input { flex: 1; padding: 12px 16px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 24px; font-size: 0.95rem; color: var(--text-primary); outline: none; resize: none; max-height: 100px; font-family: inherit; line-height: 1.4; }
@@ -376,7 +378,14 @@
     
     const root = document.getElementById('root');
     
-    // Функции навигации
+    function scrollToBottom() {
+        const scrollArea = document.getElementById('chatScrollArea');
+        if (scrollArea) {
+            scrollArea.scrollTop = scrollArea.scrollHeight;
+        }
+    }
+    
+    // Навигация
     function showMenu() {
         document.querySelector('.menu-screen')?.classList.remove('hide');
         document.querySelector('.contacts-panel')?.classList.add('hide');
@@ -392,9 +401,10 @@
     function showChat() {
         document.querySelector('.contacts-panel')?.classList.add('hide');
         document.querySelector('.chat-panel')?.classList.remove('hide');
+        setTimeout(scrollToBottom, 100);
     }
     
-    // Показ профиля
+    // Профиль
     async function showProfile(userId, isOwn = false) {
         const userSnap = await db.ref(`users/${userId}`).once('value');
         const user = userSnap.val();
@@ -446,9 +456,7 @@
         }
         
         const closeBtn = document.getElementById('closeProfileBtn');
-        if (closeBtn) {
-            closeBtn.onclick = () => modal.remove();
-        }
+        if (closeBtn) closeBtn.onclick = () => modal.remove();
     }
     
     async function changeAvatar() {
@@ -516,13 +524,6 @@
     
     function getDialogId(uid1, uid2) {
         return [uid1, uid2].sort().join('_');
-    }
-    
-    function scrollToBottom() {
-        const container = document.getElementById('messagesContainer');
-        if (container) {
-            container.scrollTop = container.scrollHeight;
-        }
     }
     
     async function sendMessage() {
@@ -1002,11 +1003,13 @@
                             <div class="chat-desc">Выберите чат</div>
                         </div>
                     </div>
-                    <div class="messages-container" id="messagesContainer"><div class="empty-chat">💬 Выберите чат</div></div>
-                    <div class="input-area">
-                        <button class="attach-btn" id="attachBtn" disabled>📎</button>
-                        <textarea class="msg-input" id="messageInput" placeholder="Сообщение..." disabled rows="1"></textarea>
-                        <button class="send-btn" id="sendBtn" disabled>📩</button>
+                    <div class="chat-scroll-area" id="chatScrollArea">
+                        <div class="messages-container" id="messagesContainer"><div class="empty-chat">💬 Выберите чат</div></div>
+                        <div class="input-area">
+                            <button class="attach-btn" id="attachBtn" disabled>📎</button>
+                            <textarea class="msg-input" id="messageInput" placeholder="Сообщение..." disabled rows="1"></textarea>
+                            <button class="send-btn" id="sendBtn" disabled>📩</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1048,7 +1051,6 @@
             if (opt.dataset.theme === savedTheme) opt.classList.add('active');
         });
         
-        // Загружаем аватарку
         db.ref(`users/${currentUser.id}/avatar`).once('value', (snap) => {
             const url = snap.val();
             const avatarDiv = document.getElementById('userAvatar');
