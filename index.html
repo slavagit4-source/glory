@@ -96,7 +96,7 @@
             position: relative;
         }
 
-        /* Меню (начальный экран) */
+        /* Меню */
         .menu-screen {
             position: fixed;
             top: 0;
@@ -125,45 +125,12 @@
             text-align: center;
         }
         
-        .menu-logo {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-        
-        .menu-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--accent-color);
-            margin-bottom: 8px;
-        }
-        
-        .menu-subtitle {
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-        }
-        
-        .menu-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .menu-btn {
-            padding: 16px;
-            border-radius: 40px;
-            border: none;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            background: var(--accent-color);
-            color: white;
-        }
-        
-        .menu-btn.secondary {
-            background: var(--bg-input);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
+        .menu-logo { font-size: 3rem; margin-bottom: 20px; }
+        .menu-title { font-size: 1.8rem; font-weight: 700; color: var(--accent-color); margin-bottom: 8px; }
+        .menu-subtitle { color: var(--text-secondary); margin-bottom: 30px; }
+        .menu-buttons { display: flex; flex-direction: column; gap: 12px; }
+        .menu-btn { padding: 16px; border-radius: 40px; border: none; font-size: 1rem; font-weight: 600; cursor: pointer; background: var(--accent-color); color: white; }
+        .menu-btn.secondary { background: var(--bg-input); color: var(--text-primary); border: 1px solid var(--border-color); }
         
         /* Панель контактов */
         .contacts-panel {
@@ -177,10 +144,7 @@
             transform: translateX(0);
             transition: transform 0.3s ease;
         }
-        
-        .contacts-panel.hide {
-            transform: translateX(-100%);
-        }
+        .contacts-panel.hide { transform: translateX(-100%); }
 
         .contacts-header {
             padding: 20px 16px;
@@ -213,170 +177,32 @@
             flex-shrink: 0;
             overflow: hidden;
         }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-        .user-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .user-info { flex: 1; }
+        .user-name { font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+        .view-profile-btn { font-size: 0.65rem; color: var(--accent-color); cursor: pointer; display: inline-block; padding: 4px 8px; background: var(--bg-input); border-radius: 20px; }
 
-        .user-info {
-            flex: 1;
-        }
+        .theme-selector { display: flex; gap: 8px; justify-content: space-between; margin-bottom: 12px; }
+        .theme-option { flex: 1; padding: 8px 4px; border-radius: 30px; cursor: pointer; text-align: center; font-size: 0.7rem; font-weight: 500; border: 2px solid transparent; background: var(--bg-input); color: var(--text-primary); }
+        .theme-option.active { border-color: var(--accent-color); background: var(--accent-color); color: white; }
 
-        .user-name {
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
+        .exit-contacts-btn { background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 12px 16px; border-radius: 30px; cursor: pointer; width: 100%; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; }
+        .logout-btn { background: linear-gradient(135deg, var(--danger), #ff3e3e); border: none; color: white; padding: 14px 16px; border-radius: 30px; cursor: pointer; width: 100%; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; }
 
-        .view-profile-btn {
-            font-size: 0.65rem;
-            color: var(--accent-color);
-            cursor: pointer;
-            display: inline-block;
-            padding: 4px 8px;
-            background: var(--bg-input);
-            border-radius: 20px;
-        }
+        .tabs { display: flex; border-bottom: 1px solid var(--border-color); background: var(--bg-tertiary); }
+        .tab-btn { flex: 1; padding: 12px; background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 0.85rem; }
+        .tab-btn.active { color: var(--accent-color); border-bottom: 2px solid var(--accent-color); }
 
-        .theme-selector {
-            display: flex;
-            gap: 8px;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
+        .search-section { padding: 16px; border-bottom: 1px solid var(--border-color); }
+        .search-title { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; }
+        .search-box { display: flex; gap: 8px; }
+        .search-box input { flex: 1; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 12px; color: var(--text-primary); outline: none; }
+        .search-box button, .create-btn { background: var(--accent-color); border: none; color: white; padding: 10px 18px; border-radius: 12px; cursor: pointer; }
+        .create-btn { background: var(--bg-input); color: var(--text-secondary); width: 100%; margin-top: 8px; }
 
-        .theme-option {
-            flex: 1;
-            padding: 8px 4px;
-            border-radius: 30px;
-            cursor: pointer;
-            text-align: center;
-            font-size: 0.7rem;
-            font-weight: 500;
-            border: 2px solid transparent;
-            background: var(--bg-input);
-            color: var(--text-primary);
-        }
-
-        .theme-option.active {
-            border-color: var(--accent-color);
-            background: var(--accent-color);
-            color: white;
-        }
-
-        .logout-btn {
-            background: linear-gradient(135deg, var(--danger), #ff3e3e);
-            border: none;
-            color: white;
-            padding: 14px 16px;
-            border-radius: 30px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: 600;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 8px;
-        }
-        
-        .exit-contacts-btn {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 12px 16px;
-            border-radius: 30px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: 500;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid var(--border-color);
-            background: var(--bg-tertiary);
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-
-        .tab-btn.active {
-            color: var(--accent-color);
-            border-bottom: 2px solid var(--accent-color);
-        }
-
-        .search-section {
-            padding: 16px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .search-title {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-
-        .search-box {
-            display: flex;
-            gap: 8px;
-        }
-
-        .search-box input {
-            flex: 1;
-            padding: 10px 14px;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            color: var(--text-primary);
-            outline: none;
-        }
-
-        .search-box button, .create-btn {
-            background: var(--accent-color);
-            border: none;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 12px;
-            cursor: pointer;
-        }
-
-        .create-btn {
-            background: var(--bg-input);
-            color: var(--text-secondary);
-            width: 100%;
-            margin-top: 8px;
-        }
-
-        .contacts-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .section-title {
-            padding: 8px 12px;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
+        .contacts-list { flex: 1; overflow-y: auto; padding: 8px; -webkit-overflow-scrolling: touch; }
+        .section-title { padding: 8px 12px; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
 
         .chat-item {
             display: flex;
@@ -387,81 +213,17 @@
             cursor: pointer;
             margin-bottom: 2px;
         }
+        .chat-item.active { background: var(--accent-color); }
+        .chat-avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 600; color: white; flex-shrink: 0; background: var(--accent-color); }
+        .chat-info { flex: 1; }
+        .chat-name { font-weight: 500; color: var(--text-primary); }
+        .view-contact-profile { font-size: 0.6rem; color: var(--accent-color); cursor: pointer; display: inline-block; margin-top: 2px; }
+        .call-btns { display: flex; gap: 5px; }
+        .call-btn { background: var(--success); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+        .call-btn:active { transform: scale(0.95); }
+        .delete-chat-btn { background: none; border: none; color: var(--danger); cursor: pointer; padding: 8px; font-size: 1rem; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-        .chat-item.active {
-            background: var(--accent-color);
-        }
-
-        .chat-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: white;
-            flex-shrink: 0;
-            background: var(--accent-color);
-            position: relative;
-        }
-
-        .chat-info {
-            flex: 1;
-        }
-
-        .chat-name {
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        .view-contact-profile {
-            font-size: 0.6rem;
-            color: var(--accent-color);
-            cursor: pointer;
-            display: inline-block;
-            margin-top: 2px;
-        }
-
-        .call-btns {
-            display: flex;
-            gap: 5px;
-        }
-
-        .call-btn {
-            background: var(--success);
-            border: none;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .call-btn:active {
-            transform: scale(0.95);
-        }
-
-        .delete-chat-btn {
-            background: none;
-            border: none;
-            color: var(--danger);
-            cursor: pointer;
-            padding: 8px;
-            font-size: 1rem;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
+        /* Чат панель */
         .chat-panel {
             flex: 1;
             display: flex;
@@ -472,10 +234,7 @@
             transform: translateX(0);
             transition: transform 0.3s ease;
         }
-        
-        .chat-panel.hide {
-            transform: translateX(100%);
-        }
+        .chat-panel.hide { transform: translateX(100%); }
 
         .chat-header {
             padding: 16px 20px;
@@ -486,56 +245,18 @@
             gap: 12px;
             flex-shrink: 0;
         }
+        .back-to-contacts-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-primary); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .chat-info-header { flex: 1; cursor: pointer; }
+        .chat-name-header { font-weight: 600; color: var(--text-primary); font-size: 1rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .view-profile-in-chat { font-size: 0.6rem; color: var(--accent-color); background: var(--bg-input); padding: 4px 8px; border-radius: 20px; cursor: pointer; }
 
-        .back-to-contacts-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-primary);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .back-to-contacts-btn:active {
-            background: var(--bg-card);
-        }
-
-        .chat-info-header {
-            flex: 1;
-            cursor: pointer;
-        }
-
-        .chat-name-header {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .view-profile-in-chat {
-            font-size: 0.6rem;
-            color: var(--accent-color);
-            background: var(--bg-input);
-            padding: 4px 8px;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-
-        /* Сообщения */
-        .messages {
+        /* Сообщения - скроллится только контент */
+        .messages-container {
             flex: 1;
             overflow-y: auto;
-            padding: 16px;
             display: flex;
             flex-direction: column;
+            padding: 16px;
             gap: 8px;
             -webkit-overflow-scrolling: touch;
         }
@@ -546,42 +267,13 @@
             border-radius: 20px;
             word-wrap: break-word;
         }
+        .message.out { background: var(--message-out); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .message.in { background: var(--message-in); color: var(--text-primary); align-self: flex-start; border-bottom-left-radius: 4px; }
+        .message-image { max-width: 200px; max-height: 200px; border-radius: 12px; cursor: pointer; }
+        .message-sender { font-size: 0.6rem; margin-bottom: 4px; opacity: 0.7; }
+        .message-time { font-size: 0.5rem; opacity: 0.5; margin-top: 4px; text-align: right; }
 
-        .message.out {
-            background: var(--message-out);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message.in {
-            background: var(--message-in);
-            color: var(--text-primary);
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-
-        .message-image {
-            max-width: 200px;
-            max-height: 200px;
-            border-radius: 12px;
-            cursor: pointer;
-        }
-
-        .message-sender {
-            font-size: 0.6rem;
-            margin-bottom: 4px;
-            opacity: 0.7;
-        }
-
-        .message-time {
-            font-size: 0.5rem;
-            opacity: 0.5;
-            margin-top: 4px;
-            text-align: right;
-        }
-
-        /* Поле ввода - оптимизировано для мобильных */
+        /* Поле ввода - всегда внизу */
         .input-area {
             padding: 10px 12px;
             background: var(--bg-tertiary);
@@ -591,69 +283,11 @@
             align-items: flex-end;
             flex-shrink: 0;
         }
-
-        .attach-btn {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        
-        .attach-btn:active {
-            transform: scale(0.95);
-        }
-
-        .msg-input {
-            flex: 1;
-            padding: 12px 16px;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            font-size: 0.95rem;
-            color: var(--text-primary);
-            outline: none;
-            resize: none;
-            max-height: 100px;
-            font-family: inherit;
-            line-height: 1.4;
-        }
-
-        .msg-input:focus {
-            border-color: var(--accent-color);
-        }
-
-        .send-btn {
-            background: var(--accent-color);
-            border: none;
-            color: white;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        
-        .send-btn:active {
-            transform: scale(0.95);
-        }
-
-        .empty-chat, .empty-contacts {
-            text-align: center;
-            color: var(--text-secondary);
-            padding: 40px;
-        }
+        .attach-btn { background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 50%; width: 44px; height: 44px; font-size: 1.2rem; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .msg-input { flex: 1; padding: 12px 16px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 24px; font-size: 0.95rem; color: var(--text-primary); outline: none; resize: none; max-height: 100px; font-family: inherit; line-height: 1.4; }
+        .msg-input:focus { border-color: var(--accent-color); }
+        .send-btn { background: var(--accent-color); border: none; color: white; width: 44px; height: 44px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .empty-chat, .empty-contacts { text-align: center; color: var(--text-secondary); padding: 40px; }
 
         /* Модалка профиля */
         .profile-modal {
@@ -668,7 +302,6 @@
             justify-content: center;
             z-index: 1000;
         }
-
         .profile-card {
             background: var(--bg-secondary);
             border-radius: 32px;
@@ -677,217 +310,37 @@
             max-width: 350px;
             text-align: center;
         }
-
-        .profile-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: var(--accent-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            font-weight: 600;
-            color: white;
-            margin: 0 auto 20px;
-            overflow: hidden;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .profile-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .profile-name {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 8px;
-        }
-
-        .profile-id {
-            font-family: monospace;
-            font-size: 0.9rem;
-            color: var(--accent-color);
-            background: var(--bg-input);
-            padding: 8px 16px;
-            border-radius: 30px;
-            display: inline-block;
-            margin-bottom: 16px;
-        }
-
-        .profile-status {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            margin-bottom: 20px;
-        }
-
-        .profile-status.online {
-            background: var(--online);
-            color: white;
-        }
-
-        .profile-status.offline {
-            background: var(--offline);
-            color: white;
-        }
-
-        .profile-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 16px;
-            flex-direction: column;
-        }
-
-        .profile-buttons button {
-            width: 100%;
-            padding: 12px;
-            border-radius: 30px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 1rem;
-        }
-
-        .btn-primary {
-            background: var(--accent-color);
-            color: white;
-        }
-
-        .btn-close {
-            background: var(--bg-input);
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-        }
+        .profile-avatar { width: 100px; height: 100px; border-radius: 50%; background: var(--accent-color); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 600; color: white; margin: 0 auto 20px; overflow: hidden; cursor: pointer; position: relative; }
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-name { font-size: 1.5rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+        .profile-id { font-family: monospace; font-size: 0.9rem; color: var(--accent-color); background: var(--bg-input); padding: 8px 16px; border-radius: 30px; display: inline-block; margin-bottom: 16px; }
+        .profile-status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; margin-bottom: 20px; }
+        .profile-status.online { background: var(--online); color: white; }
+        .profile-status.offline { background: var(--offline); color: white; }
+        .profile-buttons { display: flex; gap: 12px; margin-top: 16px; flex-direction: column; }
+        .profile-buttons button { width: 100%; padding: 12px; border-radius: 30px; border: none; cursor: pointer; font-weight: 500; font-size: 1rem; }
+        .btn-primary { background: var(--accent-color); color: white; }
+        .btn-close { background: var(--bg-input); color: var(--text-secondary); border: 1px solid var(--border-color); }
 
         @media (max-width: 768px) {
-            .contacts-panel {
-                position: fixed;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                z-index: 10;
-            }
-            
-            .chat-panel {
-                position: fixed;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                z-index: 20;
-            }
-            
-            .message {
-                max-width: 85%;
-            }
-            
-            .call-btn, .delete-chat-btn {
-                width: 44px;
-                height: 44px;
-            }
-            
-            .input-area {
-                padding: 8px 12px;
-                padding-bottom: max(8px, env(safe-area-inset-bottom));
-            }
-            
-            .attach-btn, .send-btn {
-                width: 44px;
-                height: 44px;
-            }
-            
-            .msg-input {
-                font-size: 1rem;
-                padding: 10px 14px;
-            }
+            .contacts-panel { position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: 10; }
+            .chat-panel { position: fixed; left: 0; top: 0; width: 100%; height: 100%; z-index: 20; }
+            .message { max-width: 85%; }
+            .call-btn, .delete-chat-btn { width: 44px; height: 44px; }
+            .input-area { padding: 8px 12px; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
         }
 
-        .login-screen {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background: var(--bg-primary);
-        }
-
-        .login-card {
-            background: var(--bg-secondary);
-            border-radius: 32px;
-            padding: 40px;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        .login-card h1 {
-            color: var(--accent-color);
-            font-size: 2rem;
-        }
-
-        .login-card input {
-            width: 100%;
-            padding: 12px 16px;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            color: var(--text-primary);
-            margin-bottom: 16px;
-        }
-
-        .id-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
+        .login-screen { display: flex; align-items: center; justify-content: center; height: 100vh; background: var(--bg-primary); }
+        .login-card { background: var(--bg-secondary); border-radius: 32px; padding: 40px; width: 90%; max-width: 400px; }
+        .login-card h1 { color: var(--accent-color); font-size: 2rem; }
+        .login-card input { width: 100%; padding: 12px 16px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 16px; color: var(--text-primary); margin-bottom: 16px; }
+        .id-row { display: flex; gap: 10px; margin-bottom: 16px; }
         .id-row input { flex: 1; margin-bottom: 0; }
-        .id-row button {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 12px 20px;
-            border-radius: 16px;
-            cursor: pointer;
-        }
-
-        .login-btn {
-            background: linear-gradient(135deg, var(--accent-color), #6a3dff);
-            border: none;
-            color: white;
-            width: 100%;
-            padding: 14px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .login-tabs {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .login-tab {
-            flex: 1;
-            padding: 10px;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: 30px;
-            cursor: pointer;
-            text-align: center;
-            color: var(--text-secondary);
-        }
-
-        .login-tab.active {
-            background: linear-gradient(135deg, var(--accent-color), #6a3dff);
-            color: white;
-        }
+        .id-row button { background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); padding: 12px 20px; border-radius: 16px; cursor: pointer; }
+        .login-btn { background: linear-gradient(135deg, var(--accent-color), #6a3dff); border: none; color: white; width: 100%; padding: 14px; border-radius: 30px; font-weight: 600; cursor: pointer; }
+        .login-tabs { display: flex; gap: 12px; margin-bottom: 20px; }
+        .login-tab { flex: 1; padding: 10px; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 30px; cursor: pointer; text-align: center; color: var(--text-secondary); }
+        .login-tab.active { background: linear-gradient(135deg, var(--accent-color), #6a3dff); color: white; }
     </style>
 </head>
 <body>
@@ -923,7 +376,25 @@
     
     const root = document.getElementById('root');
     
-    // Показ профиля пользователя (свой или чужой)
+    // Функции навигации
+    function showMenu() {
+        document.querySelector('.menu-screen')?.classList.remove('hide');
+        document.querySelector('.contacts-panel')?.classList.add('hide');
+        document.querySelector('.chat-panel')?.classList.add('hide');
+    }
+    
+    function showContacts() {
+        document.querySelector('.menu-screen')?.classList.add('hide');
+        document.querySelector('.contacts-panel')?.classList.remove('hide');
+        document.querySelector('.chat-panel')?.classList.add('hide');
+    }
+    
+    function showChat() {
+        document.querySelector('.contacts-panel')?.classList.add('hide');
+        document.querySelector('.chat-panel')?.classList.remove('hide');
+    }
+    
+    // Показ профиля
     async function showProfile(userId, isOwn = false) {
         const userSnap = await db.ref(`users/${userId}`).once('value');
         const user = userSnap.val();
@@ -956,22 +427,28 @@
         document.body.appendChild(modal);
         
         if (isOwn) {
-            document.getElementById('editNameBtn')?.addEventListener('click', async () => {
-                const newName = prompt('Введите новое имя:', user.name);
-                if (newName && newName.trim()) {
-                    await db.ref(`users/${userId}/name`).set(newName);
-                    currentUser.name = newName;
-                    localStorage.setItem('gloryUser', JSON.stringify(currentUser));
-                    const userNameSpan = document.getElementById('userNameSpan');
-                    if (userNameSpan) userNameSpan.textContent = newName;
-                    renderAllChats();
-                    modal.remove();
-                    showProfile(userId, true);
-                }
-            });
+            const editBtn = document.getElementById('editNameBtn');
+            if (editBtn) {
+                editBtn.onclick = async () => {
+                    const newName = prompt('Введите новое имя:', user.name);
+                    if (newName && newName.trim()) {
+                        await db.ref(`users/${userId}/name`).set(newName);
+                        currentUser.name = newName;
+                        localStorage.setItem('gloryUser', JSON.stringify(currentUser));
+                        const userNameSpan = document.getElementById('userNameSpan');
+                        if (userNameSpan) userNameSpan.textContent = newName;
+                        renderAllChats();
+                        modal.remove();
+                        showProfile(userId, true);
+                    }
+                };
+            }
         }
         
-        document.getElementById('closeProfileBtn').addEventListener('click', () => modal.remove());
+        const closeBtn = document.getElementById('closeProfileBtn');
+        if (closeBtn) {
+            closeBtn.onclick = () => modal.remove();
+        }
     }
     
     async function changeAvatar() {
@@ -994,28 +471,6 @@
             }
         };
         input.click();
-    }
-    
-    // Навигация
-    function showMenu() {
-        document.querySelector('.menu-screen')?.classList.remove('hide');
-        document.querySelector('.contacts-panel')?.classList.add('hide');
-        document.querySelector('.chat-panel')?.classList.add('hide');
-    }
-    
-    function showContacts() {
-        document.querySelector('.menu-screen')?.classList.add('hide');
-        document.querySelector('.contacts-panel')?.classList.remove('hide');
-        document.querySelector('.chat-panel')?.classList.add('hide');
-    }
-    
-    function showChat() {
-        document.querySelector('.contacts-panel')?.classList.add('hide');
-        document.querySelector('.chat-panel')?.classList.remove('hide');
-        setTimeout(() => {
-            const container = document.getElementById('messagesContainer');
-            if (container) container.scrollTop = container.scrollHeight;
-        }, 100);
     }
     
     // Основные функции
@@ -1063,6 +518,13 @@
         return [uid1, uid2].sort().join('_');
     }
     
+    function scrollToBottom() {
+        const container = document.getElementById('messagesContainer');
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+    }
+    
     async function sendMessage() {
         const input = document.getElementById('messageInput');
         if (!input) return;
@@ -1086,6 +548,7 @@
             await db.ref(path).push(message);
             input.value = '';
             autoResizeTextarea(input);
+            scrollToBottom();
         } catch(e) { alert('Ошибка отправки'); }
     }
     
@@ -1137,6 +600,7 @@
                     await db.ref(path).push(message);
                     modal.remove();
                     URL.revokeObjectURL(previewUrl);
+                    scrollToBottom();
                 };
                 document.getElementById('cancelImageBtn').onclick = () => {
                     modal.remove();
@@ -1162,6 +626,7 @@
             snapshot.forEach(child => { messages.push(child.val()); });
             messages.sort((a, b) => a.timestamp - b.timestamp);
             renderMessages(messages);
+            scrollToBottom();
         });
     }
     
@@ -1182,7 +647,6 @@
             `;
         }
         container.innerHTML = html;
-        setTimeout(() => { container.scrollTop = container.scrollHeight; }, 100);
     }
     
     async function loadContactsAndChats() {
@@ -1239,8 +703,8 @@
                                 <div class="view-contact-profile" onclick="event.stopPropagation(); showProfile('${contact.id}', false)">👤 Профиль</div>
                             </div>
                             <div class="call-btns">
-                                <button class="call-btn" onclick="event.stopPropagation(); startCall('${contact.id}', true)" title="Видеозвонок">📹</button>
-                                <button class="call-btn" onclick="event.stopPropagation(); startCall('${contact.id}', false)" title="Аудиозвонок">🎤</button>
+                                <button class="call-btn" onclick="event.stopPropagation(); alert('Звонок в разработке')" title="Видеозвонок">📹</button>
+                                <button class="call-btn" onclick="event.stopPropagation(); alert('Звонок в разработке')" title="Аудиозвонок">🎤</button>
                                 <button class="delete-chat-btn" onclick="event.stopPropagation(); deleteContact('${contact.id}')" title="Удалить">🗑️</button>
                             </div>
                         </div>
@@ -1309,9 +773,8 @@
                     <div class="chat-desc">${type === 'user' ? 'Личный чат' : type === 'group' ? 'Группа' : 'Канал'}</div>
                 </div>
             `;
-            document.getElementById('backToContactsBtn')?.addEventListener('click', () => {
-                showContacts();
-            });
+            const backBtn = document.getElementById('backToContactsBtn');
+            if (backBtn) backBtn.onclick = () => showContacts();
         }
         
         loadMessages();
@@ -1386,10 +849,6 @@
             return true;
         }
         return false;
-    }
-    
-    async function startCall(targetUserId, isVideo) {
-        alert(`📞 Звонок ${isVideo ? 'видео' : 'аудио'} пользователю ${targetUserId}\n(функция в разработке)`);
     }
     
     function logout() {
@@ -1543,7 +1002,7 @@
                             <div class="chat-desc">Выберите чат</div>
                         </div>
                     </div>
-                    <div class="messages" id="messagesContainer"><div class="empty-chat">💬 Выберите чат</div></div>
+                    <div class="messages-container" id="messagesContainer"><div class="empty-chat">💬 Выберите чат</div></div>
                     <div class="input-area">
                         <button class="attach-btn" id="attachBtn" disabled>📎</button>
                         <textarea class="msg-input" id="messageInput" placeholder="Сообщение..." disabled rows="1"></textarea>
@@ -1570,7 +1029,6 @@
         window.setTab = setTab;
         window.setTheme = setTheme;
         window.selectContact = selectContact;
-        window.startCall = startCall;
         window.showProfile = showProfile;
         window.changeAvatar = changeAvatar;
         
@@ -1588,6 +1046,15 @@
         
         document.querySelectorAll('.theme-option').forEach(opt => {
             if (opt.dataset.theme === savedTheme) opt.classList.add('active');
+        });
+        
+        // Загружаем аватарку
+        db.ref(`users/${currentUser.id}/avatar`).once('value', (snap) => {
+            const url = snap.val();
+            const avatarDiv = document.getElementById('userAvatar');
+            if (url && avatarDiv) {
+                avatarDiv.innerHTML = `<img src="${url}">`;
+            }
         });
     }
     
