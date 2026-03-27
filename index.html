@@ -336,6 +336,7 @@
     let channels = [];
     let currentMessagesRef = null;
     let currentTab = 'chats';
+    let lastMessageTimestamp = {};
     
     const root = document.getElementById('root');
     
@@ -367,6 +368,48 @@
         setTimeout(scrollToBottom, 100);
     }
     
+    // Уведомления
+    function showNotification(title, body, icon = '🔔') {
+        // Звук
+        try {
+            const audio = new Audio();
+            audio.volume = 0.5;
+            const beep = (function() {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    const ctx = new AudioContext();
+                    const oscillator = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    oscillator.connect(gain);
+                    gain.connect(ctx.destination);
+                    oscillator.frequency.value = 800;
+                    gain.gain.value = 0.3;
+                    oscillator.start();
+                    gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + 0.5);
+                    setTimeout(() => oscillator.stop(), 500);
+                }
+            });
+            beep();
+        } catch(e) {}
+        
+        // Всплывающее уведомление
+        if (Notification.permission === 'granted') {
+            new Notification(title, { body: body, icon: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%237c4dff"><path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>') });
+        }
+        
+        // Мигание заголовка
+        let originalTitle = document.title;
+        let count = 0;
+        const interval = setInterval(() => {
+            document.title = count % 2 === 0 ? '🔔 Новое сообщение!' : originalTitle;
+            count++;
+            if (count > 6) {
+                clearInterval(interval);
+                document.title = originalTitle;
+            }
+        }, 500);
+    }
+    
     async function showProfile(userId, isOwn = false) {
         const userSnap = await db.ref(`users/${userId}`).once('value');
         const user = userSnap.val();
@@ -377,14 +420,15 @@
         
         const modal = document.createElement('div');
         modal.className = 'profile-modal';
+        modal.id = 'profileModal';
         
         modal.innerHTML = `
             <div class="profile-card">
-                <div class="profile-avatar" ${isOwn ? 'onclick="changeAvatar()"' : ''}>
+                <div class="profile-avatar" ${isOwn ? 'id="profileAvatar"' : ''}>
                     ${avatarUrl ? `<img src="${avatarUrl}">` : user.name.charAt(0).toUpperCase()}
-                    ${isOwn ? '<div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.6); font-size:0.6rem; padding:2px;">📷</div>' : ''}
+                    ${isOwn ? '<div style="position:absolute; bottom:0; left:0; right:0; background:rgba(0,0,0,0.6); font-size:0.6rem; padding:2px;">📷 Изменить</div>' : ''}
                 </div>
-                <div class="profile-name">${escapeHtml(user.name)}</div>
+                <div class="profile-name" id="profileNameText">${escapeHtml(user.name)}</div>
                 <div class="profile-id">🆔 ${userId}</div>
                 <div class="profile-status ${status === 'online' ? 'online' : 'offline'}">
                     ${status === 'online' ? '🟢 Онлайн' : '⚫ Офлайн'}
@@ -399,6 +443,11 @@
         document.body.appendChild(modal);
         
         if (isOwn) {
+            const avatarDiv = document.getElementById('profileAvatar');
+            if (avatarDiv) {
+                avatarDiv.onclick = () => changeAvatar();
+            }
+            
             const editBtn = document.getElementById('editNameBtn');
             if (editBtn) {
                 editBtn.onclick = async () => {
@@ -631,8 +680,27 @@
                 messages.push(child.val());
             });
             messages.sort((a, b) => a.timestamp - b.timestamp);
+            
+            // Проверка на новые сообщения для уведомлений
+            if (messages.length > 0) {
+                const lastMsg = messages[messages.length - 1];
+                const lastKey = `${path}_last`;
+                if (lastMessageTimestamp[lastKey] !== lastMsg.timestamp && lastMsg.fromId !== currentUser.id) {
+                    if (activeChat !== lastMsg.fromId && activeChatType === 'user') {
+                        getUserName(lastMsg.fromId).then(name => {
+                            showNotification(`📩 ${name}`, lastMsg.text.length > 50 ? lastMsg.text.substring(0, 50) + '...' : lastMsg.text);
+                        });
+                    } else if (activeChat !== lastMsg.fromId && activeChatType !== 'user') {
+                        showNotification(`📢 Новое сообщение`, lastMsg.text.length > 50 ? lastMsg.text.substring(0, 50) + '...' : lastMsg.text);
+                    }
+                }
+                lastMessageTimestamp[lastKey] = lastMsg.timestamp;
+            }
+            
             renderMessages(messages);
-            scrollToBottom();
+            if (activeChat && activeChatType) {
+                scrollToBottom();
+            }
         });
     }
     
@@ -1185,6 +1253,11 @@
     function showMessenger() {
         const savedTheme = localStorage.getItem('glory_theme') || 'dark';
         document.body.className = savedTheme + '-theme';
+        
+        // Запрос разрешения на уведомления
+        if (Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
         
         root.innerHTML = `
             <div class="app">
