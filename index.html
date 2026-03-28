@@ -263,7 +263,7 @@
             display: flex;
             gap: 8px;
             justify-content: space-between;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
         }
 
@@ -285,6 +285,24 @@
             background: var(--accent-color);
             color: white;
         }
+        
+        .exit-contacts-btn {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 14px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+        
+        .exit-contacts-btn:active {
+            background: var(--accent-color);
+            color: white;
+        }
 
         .logout-btn {
             background: linear-gradient(135deg, var(--danger), #ff3e3e);
@@ -296,20 +314,7 @@
             width: 100%;
             font-weight: 600;
             font-size: 1rem;
-            margin-top: 8px;
-        }
-        
-        .exit-contacts-btn {
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            padding: 12px 16px;
-            border-radius: 30px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: 500;
-            font-size: 0.9rem;
-            margin-top: 12px;
+            margin-top: 0;
         }
 
         .tabs {
@@ -510,6 +515,9 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .back-to-contacts-btn:active {
@@ -697,6 +705,11 @@
             
             .message {
                 max-width: 85%;
+            }
+            
+            .contacts-header {
+                padding-top: calc(20px + env(safe-area-inset-top, 0px));
+                padding-bottom: 20px;
             }
         }
 
@@ -1263,7 +1276,7 @@
         if (header) {
             const typeIcon = type === 'user' ? '💬' : (type === 'group' ? '👥' : '📢');
             header.innerHTML = `
-                <button class="back-to-contacts-btn" id="backToContactsBtn">←</button>
+                <button class="back-to-contacts-btn" id="backToContactsBtn">✕</button>
                 <div class="chat-info-header" onclick="showIdPopup('${chatId}')">
                     <div class="chat-name-header">
                         ${typeIcon} ${escapeHtml(name)}
@@ -1676,7 +1689,7 @@
                 </div>
                 <div class="chat-panel hide">
                     <div class="chat-header" id="chatHeader">
-                        <button class="back-to-contacts-btn" id="backToContactsBtn">←</button>
+                        <button class="back-to-contacts-btn" id="backToContactsBtn">✕</button>
                         <div class="chat-info-header">
                             <div class="chat-name-header">GLORY</div>
                             <div class="chat-desc">Выберите чат</div>
