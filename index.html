@@ -9,14 +9,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
     
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
-            }
-        }
-    </script>
-    
     <style>
         * {
             margin: 0;
@@ -49,7 +41,6 @@
             --message-in: #1a1a1a;
             --success: #4caf50;
             --danger: #ff5e5e;
-            --warning: #ff9800;
             --unread-badge: #ff4444;
         }
         
@@ -166,6 +157,7 @@
             justify-content: center;
             cursor: pointer;
             font-size: 20px;
+            color: var(--text-secondary);
         }
         
         .user-card {
@@ -308,7 +300,7 @@
             outline: none;
         }
         
-        .search-box button, .create-btn, .action-btn {
+        .search-box button, .create-btn {
             background: var(--accent-color);
             border: none;
             color: white;
@@ -364,7 +356,6 @@
             background: var(--accent-color);
             color: white;
             font-size: 1.2rem;
-            position: relative;
         }
         
         .chat-info {
@@ -374,15 +365,6 @@
         .chat-name {
             font-weight: 500;
             color: var(--text-primary);
-        }
-        
-        .chat-preview {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 150px;
         }
         
         .chat-id-hidden {
@@ -448,6 +430,9 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .messages {
@@ -470,12 +455,14 @@
             background: var(--message-out);
             color: white;
             align-self: flex-end;
+            border-bottom-right-radius: 4px;
         }
         
         .message.in {
             background: var(--message-in);
             color: var(--text-primary);
             align-self: flex-start;
+            border-bottom-left-radius: 4px;
         }
         
         .message-sender {
@@ -689,6 +676,42 @@
             text-align: center;
         }
         
+        .profile-card input {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+        
+        .profile-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .btn-close {
+            background: var(--bg-input);
+            color: var(--text-secondary);
+            border: none;
+            padding: 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            flex: 1;
+        }
+        
         @media (max-width: 768px) {
             .contacts-panel, .chat-panel {
                 position: fixed;
@@ -707,13 +730,24 @@
 <body>
 <div id="root"></div>
 
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+        }
+    }
+</script>
+
 <script type="module">
     import * as THREE from 'three';
     window.THREE = THREE;
     
     window.initDetailedCake = function(containerId) {
         const container = document.getElementById(containerId);
-        if (!container) return null;
+        if (!container) {
+            console.log('Container not found:', containerId);
+            return null;
+        }
         
         const width = container.clientWidth || 220;
         const height = container.clientHeight || 220;
@@ -730,34 +764,95 @@
         container.innerHTML = '';
         container.appendChild(renderer.domElement);
         
+        // Освещение
         const ambientLight = new THREE.AmbientLight(0x404060);
         scene.add(ambientLight);
         const mainLight = new THREE.DirectionalLight(0xfff5e6, 1);
         mainLight.position.set(2, 3, 2);
         scene.add(mainLight);
+        const fillLight = new THREE.PointLight(0xffaa88, 0.5);
+        fillLight.position.set(1, 2, 2);
+        scene.add(fillLight);
         
-        const bottomCake = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.3, 0.45, 48), new THREE.MeshStandardMaterial({ color: 0xd4a373, roughness: 0.2 }));
+        // Нижний ярус
+        const bottomCake = new THREE.Mesh(
+            new THREE.CylinderGeometry(1.3, 1.3, 0.45, 48),
+            new THREE.MeshStandardMaterial({ color: 0xd4a373, roughness: 0.2 })
+        );
         bottomCake.position.y = 0.225;
         scene.add(bottomCake);
         
-        const middleCake = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, 0.4, 48), new THREE.MeshStandardMaterial({ color: 0xb5835a }));
+        const bottomIcing = new THREE.Mesh(
+            new THREE.CylinderGeometry(1.35, 1.35, 0.12, 48),
+            new THREE.MeshStandardMaterial({ color: 0xf8e8d0 })
+        );
+        bottomIcing.position.y = 0.45;
+        scene.add(bottomIcing);
+        
+        // Средний ярус
+        const middleCake = new THREE.Mesh(
+            new THREE.CylinderGeometry(1.0, 1.0, 0.4, 48),
+            new THREE.MeshStandardMaterial({ color: 0xb5835a })
+        );
         middleCake.position.y = 0.75;
         scene.add(middleCake);
         
-        const topCake = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 0.38, 48), new THREE.MeshStandardMaterial({ color: 0x9c6e42 }));
+        const middleIcing = new THREE.Mesh(
+            new THREE.CylinderGeometry(1.05, 1.05, 0.1, 48),
+            new THREE.MeshStandardMaterial({ color: 0xf8e8d0 })
+        );
+        middleIcing.position.y = 0.95;
+        scene.add(middleIcing);
+        
+        // Верхний ярус
+        const topCake = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.7, 0.7, 0.38, 48),
+            new THREE.MeshStandardMaterial({ color: 0x9c6e42 })
+        );
         topCake.position.y = 1.2;
         scene.add(topCake);
         
+        const topIcing = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.75, 0.75, 0.1, 48),
+            new THREE.MeshStandardMaterial({ color: 0xf8e8d0 })
+        );
+        topIcing.position.y = 1.4;
+        scene.add(topIcing);
+        
+        // Свечи
         const candlePositions = [-0.35, 0, 0.35];
         candlePositions.forEach((x, idx) => {
-            const candle = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.1, 0.45, 12), new THREE.MeshStandardMaterial({ color: idx === 1 ? 0xffaa66 : 0xff6b6b }));
+            const candle = new THREE.Mesh(
+                new THREE.CylinderGeometry(0.09, 0.1, 0.45, 12),
+                new THREE.MeshStandardMaterial({ color: idx === 1 ? 0xffaa66 : 0xff6b6b })
+            );
             candle.position.set(x, 1.65, 0);
             scene.add(candle);
             
-            const flame = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.15, 8), new THREE.MeshStandardMaterial({ color: 0xffaa44, emissive: 0xff4400, emissiveIntensity: 0.6 }));
+            const flame = new THREE.Mesh(
+                new THREE.ConeGeometry(0.07, 0.15, 8),
+                new THREE.MeshStandardMaterial({ color: 0xffaa44, emissive: 0xff4400, emissiveIntensity: 0.6 })
+            );
             flame.position.set(x, 1.88, 0);
             scene.add(flame);
         });
+        
+        // Ягоды
+        const berryMat = new THREE.MeshStandardMaterial({ color: 0xdd2244 });
+        for (let i = 0; i < 8; i++) {
+            const berry = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), berryMat);
+            const angle = (i / 8) * Math.PI * 2;
+            berry.position.set(Math.cos(angle) * 0.55, 1.48, Math.sin(angle) * 0.55);
+            scene.add(berry);
+        }
+        
+        // Конфетти
+        const confMat = new THREE.MeshStandardMaterial({ color: 0xffaa88 });
+        for (let i = 0; i < 60; i++) {
+            const particle = new THREE.Mesh(new THREE.SphereGeometry(0.03, 4, 4), confMat);
+            particle.position.set((Math.random() - 0.5) * 2.2, Math.random() * 1.8, (Math.random() - 0.5) * 1.8);
+            scene.add(particle);
+        }
         
         let angle = 0;
         function animate() {
@@ -786,7 +881,10 @@
     try {
         firebase.initializeApp(FIREBASE_CONFIG);
         db = firebase.database();
-    } catch(e) {}
+        console.log("Firebase initialized");
+    } catch(e) {
+        console.error("Firebase init error:", e);
+    }
 
     let currentUser = null;
     let activeChat = null;
@@ -796,8 +894,8 @@
     let channels = [];
     let currentMessagesRef = null;
     let currentTab = 'chats';
-    let unreadCounts = {}; // { chatId: count }
-    let lastReadTimes = {}; // { chatId: timestamp }
+    let unreadCounts = {};
+    let lastReadTimes = {};
     
     const root = document.getElementById('root');
     
@@ -925,7 +1023,10 @@
     
     async function sendMessage() {
         const input = document.getElementById('messageInput');
-        if (!input || !input.value.trim() || !activeChat || !activeChatType) return;
+        if (!input || !input.value.trim() || !activeChat || !activeChatType) {
+            console.log("Cannot send: no input or no active chat");
+            return;
+        }
         
         const message = {
             id: Date.now() + '_' + Math.random().toString(36).substr(2, 8),
@@ -938,15 +1039,23 @@
         };
         
         const path = getPathForChat(activeChat, activeChatType);
-        await db.ref(path).push(message);
-        input.value = '';
-        input.style.height = 'auto';
+        console.log("Sending to path:", path);
         
-        // Обновляем время последнего прочитанного
-        lastReadTimes[`${activeChatType}_${activeChat}`] = Date.now();
-        localStorage.setItem('glory_lastRead', JSON.stringify(lastReadTimes));
-        unreadCounts[`${activeChatType}_${activeChat}`] = 0;
-        renderAllChats();
+        try {
+            await db.ref(path).push(message);
+            input.value = '';
+            input.style.height = 'auto';
+            
+            // Обновляем время последнего прочитанного
+            const key = `${activeChatType}_${activeChat}`;
+            lastReadTimes[key] = Date.now();
+            localStorage.setItem('glory_lastRead', JSON.stringify(lastReadTimes));
+            unreadCounts[key] = 0;
+            renderAllChats();
+        } catch(e) {
+            console.error("Send error:", e);
+            alert("Ошибка отправки: " + e.message);
+        }
     }
     
     function markChatAsRead(chatId, type) {
@@ -966,27 +1075,35 @@
     }
     
     function showMenu() {
-        document.querySelector('.menu-screen')?.classList.remove('hide');
-        document.querySelector('.contacts-panel')?.classList.add('hide');
-        document.querySelector('.chat-panel')?.classList.add('hide');
+        const menuScreen = document.querySelector('.menu-screen');
+        const contactsPanel = document.querySelector('.contacts-panel');
+        const chatPanel = document.querySelector('.chat-panel');
+        if (menuScreen) menuScreen.classList.remove('hide');
+        if (contactsPanel) contactsPanel.classList.add('hide');
+        if (chatPanel) chatPanel.classList.add('hide');
     }
     
     function showContacts() {
-        document.querySelector('.menu-screen')?.classList.add('hide');
-        document.querySelector('.contacts-panel')?.classList.remove('hide');
-        document.querySelector('.chat-panel')?.classList.add('hide');
+        const menuScreen = document.querySelector('.menu-screen');
+        const contactsPanel = document.querySelector('.contacts-panel');
+        const chatPanel = document.querySelector('.chat-panel');
+        if (menuScreen) menuScreen.classList.add('hide');
+        if (contactsPanel) contactsPanel.classList.remove('hide');
+        if (chatPanel) chatPanel.classList.add('hide');
     }
     
     function showChat() {
-        document.querySelector('.contacts-panel')?.classList.add('hide');
-        document.querySelector('.chat-panel')?.classList.remove('hide');
+        const contactsPanel = document.querySelector('.contacts-panel');
+        const chatPanel = document.querySelector('.chat-panel');
+        if (contactsPanel) contactsPanel.classList.add('hide');
+        if (chatPanel) chatPanel.classList.remove('hide');
     }
     
     function setTheme(theme) {
         document.body.className = theme + '-theme';
         localStorage.setItem('glory_theme', theme);
         document.querySelectorAll('.theme-option').forEach(opt => {
-            if (opt.innerText.includes(theme === 'dark' ? 'Тёмная' : 'Светлая')) {
+            if (opt.dataset.theme === theme) {
                 opt.classList.add('active');
             } else {
                 opt.classList.remove('active');
@@ -999,6 +1116,7 @@
         if (!activeChat || !activeChatType) return;
         
         const path = getPathForChat(activeChat, activeChatType);
+        console.log("Loading messages from:", path);
         currentMessagesRef = db.ref(path);
         
         currentMessagesRef.on('value', (snapshot) => {
@@ -1044,38 +1162,15 @@
             } catch(e) {}
         }
         
-        // Подписываемся на все сообщения для подсчета непрочитанных
-        const processMessages = async (path, chatId, type, name) => {
-            const key = `${type}_${chatId}`;
-            const lastRead = lastReadTimes[key] || 0;
-            let unread = 0;
-            const snapshot = await db.ref(path).once('value');
-            snapshot.forEach(child => {
-                const msg = child.val();
-                if (msg.fromId !== currentUser.id && msg.timestamp > lastRead) {
-                    unread++;
-                }
-            });
-            if (unread > 0) {
-                unreadCounts[key] = unread;
-                // Показываем уведомление только если чат не активен
-                if (activeChat !== chatId && !document.querySelector('.chat-panel:not(.hide)')) {
-                    showNotification(`📩 Новое сообщение`, `${name}: ${msg.text?.substring(0, 30) || 'сообщение'}`);
-                }
-            }
-            renderAllChats();
-        };
-        
-        // Следим за новыми сообщениями в реальном времени
+        // Функция для отслеживания новых сообщений
         const watchMessages = (path, chatId, type, name) => {
             const key = `${type}_${chatId}`;
-            const lastRead = lastReadTimes[key] || 0;
             db.ref(path).on('child_added', (snapshot) => {
                 const msg = snapshot.val();
                 if (msg.fromId !== currentUser.id && msg.timestamp > (lastReadTimes[key] || 0)) {
                     unreadCounts[key] = (unreadCounts[key] || 0) + 1;
                     renderAllChats();
-                    if (activeChat !== chatId && !document.querySelector('.chat-panel:not(.hide)')) {
+                    if (activeChat !== chatId && document.querySelector('.contacts-panel:not(.hide)')) {
                         showNotification(`📩 ${name}`, msg.text?.substring(0, 50) || 'новое сообщение');
                     }
                 }
@@ -1241,7 +1336,8 @@
                     <div class="chat-name-header">${typeIcon} ${escapeHtml(name)}</div>
                 </div>
             `;
-            document.getElementById('backToContactsBtn').onclick = () => showContacts();
+            const backBtn = document.getElementById('backToContactsBtn');
+            if (backBtn) backBtn.onclick = () => showContacts();
         }
         
         // Помечаем как прочитанное
@@ -1249,10 +1345,15 @@
         
         loadMessages();
         showChat();
-        document.getElementById('messageInput').disabled = false;
-        document.getElementById('sendBtn').disabled = false;
-        document.getElementById('attachBtn').disabled = false;
-        document.getElementById('messageInput').focus();
+        const msgInput = document.getElementById('messageInput');
+        if (msgInput) {
+            msgInput.disabled = false;
+            msgInput.focus();
+        }
+        const sendBtn = document.getElementById('sendBtn');
+        const attachBtn = document.getElementById('attachBtn');
+        if (sendBtn) sendBtn.disabled = false;
+        if (attachBtn) attachBtn.disabled = false;
     };
     
     async function deleteContact(contactId) {
@@ -1261,7 +1362,8 @@
             if (activeChat === contactId && activeChatType === 'user') {
                 activeChat = null;
                 activeChatType = null;
-                document.getElementById('messagesContainer').innerHTML = '<div class="empty-chat">💬 Выберите чат</div>';
+                const container = document.getElementById('messagesContainer');
+                if (container) container.innerHTML = '<div class="empty-chat">💬 Выберите чат</div>';
                 showContacts();
             }
             renderAllChats();
@@ -1304,11 +1406,11 @@
         modal.innerHTML = `
             <div class="profile-card">
                 <h3 style="color:var(--text-primary); margin-bottom:16px;">${type === 'group' ? 'Создать группу' : 'Создать канал'}</h3>
-                <input type="text" id="createName" placeholder="Название" style="width:100%; padding:12px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:12px; color:var(--text-primary); margin-bottom:12px;">
-                <input type="text" id="createDesc" placeholder="Описание" style="width:100%; padding:12px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:12px; color:var(--text-primary); margin-bottom:12px;">
-                <div style="display:flex; gap:12px; margin-top:16px;">
-                    <button class="btn-primary" id="confirmCreate" style="flex:1; padding:12px; border-radius:30px; background:var(--accent-color); color:white; border:none;">Создать</button>
-                    <button class="btn-close" id="cancelCreate" style="flex:1; padding:12px; border-radius:30px; background:var(--bg-input); border:none; cursor:pointer;">Отмена</button>
+                <input type="text" id="createName" placeholder="Название">
+                <input type="text" id="createDesc" placeholder="Описание">
+                <div class="profile-buttons">
+                    <button class="btn-primary" id="confirmCreate">Создать</button>
+                    <button class="btn-close" id="cancelCreate">Отмена</button>
                 </div>
             </div>
         `;
@@ -1339,10 +1441,10 @@
         modal.innerHTML = `
             <div class="profile-card">
                 <h3 style="color:var(--text-primary); margin-bottom:16px;">${type === 'group' ? 'Вступить в группу' : 'Подписаться на канал'}</h3>
-                <input type="text" id="joinId" placeholder="Введите ID" style="width:100%; padding:12px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:12px; color:var(--text-primary); margin-bottom:12px;">
-                <div style="display:flex; gap:12px; margin-top:16px;">
-                    <button class="btn-primary" id="confirmJoin" style="flex:1; padding:12px; border-radius:30px; background:var(--accent-color); color:white; border:none;">${type === 'group' ? 'Вступить' : 'Подписаться'}</button>
-                    <button class="btn-close" id="cancelJoin" style="flex:1; padding:12px; border-radius:30px; background:var(--bg-input); border:none; cursor:pointer;">Отмена</button>
+                <input type="text" id="joinId" placeholder="Введите ID">
+                <div class="profile-buttons">
+                    <button class="btn-primary" id="confirmJoin">${type === 'group' ? 'Вступить' : 'Подписаться'}</button>
+                    <button class="btn-close" id="cancelJoin">Отмена</button>
                 </div>
             </div>
         `;
@@ -1415,12 +1517,39 @@
     }
     
     function showLogin() {
-        root.innerHTML = `<div class="login-screen"><div class="login-card"><h1>GLORY</h1><p>Мессенджер с уведомлениями 🔔</p><div class="login-tabs"><div class="login-tab active" data-tab="new" onclick="setLoginTab('new')">🆕 Регистрация</div><div class="login-tab" data-tab="existing" onclick="setLoginTab('existing')">🔑 Вход</div></div>
-            <div id="newIdSection"><input type="text" id="loginName" placeholder="Ваше имя"><div class="id-row"><input type="text" id="loginId" readonly><button id="genIdBtn">🔄</button></div><input type="password" id="loginPassword" placeholder="Пароль (6 цифр)" maxlength="6"><div class="password-hint">🔒 6-значный цифровой пароль</div><button class="login-btn" id="loginBtn">Создать аккаунт</button></div>
-            <div id="existingIdSection" style="display:none;"><input type="text" id="existingIdInput" placeholder="Ваш ID"><input type="text" id="existingNameInput" placeholder="Ваше имя"><input type="password" id="existingPasswordInput" placeholder="Пароль (6 цифр)" maxlength="6"><button class="login-btn" id="loginExistingBtn">Войти</button></div></div></div>`;
+        root.innerHTML = `
+            <div class="login-screen">
+                <div class="login-card">
+                    <h1>GLORY</h1>
+                    <p>Мессенджер с уведомлениями 🔔</p>
+                    <div class="login-tabs">
+                        <div class="login-tab active" data-tab="new" onclick="setLoginTab('new')">🆕 Регистрация</div>
+                        <div class="login-tab" data-tab="existing" onclick="setLoginTab('existing')">🔑 Вход</div>
+                    </div>
+                    <div id="newIdSection">
+                        <input type="text" id="loginName" placeholder="Ваше имя">
+                        <div class="id-row">
+                            <input type="text" id="loginId" readonly>
+                            <button id="genIdBtn">🔄</button>
+                        </div>
+                        <input type="password" id="loginPassword" placeholder="Пароль (6 цифр)" maxlength="6">
+                        <div class="password-hint">🔒 6-значный цифровой пароль</div>
+                        <button class="login-btn" id="loginBtn">Создать аккаунт</button>
+                    </div>
+                    <div id="existingIdSection" style="display:none;">
+                        <input type="text" id="existingIdInput" placeholder="Ваш ID">
+                        <input type="text" id="existingNameInput" placeholder="Ваше имя">
+                        <input type="password" id="existingPasswordInput" placeholder="Пароль (6 цифр)" maxlength="6">
+                        <button class="login-btn" id="loginExistingBtn">Войти</button>
+                    </div>
+                </div>
+            </div>
+        `;
         
         document.getElementById('loginId').value = generateId();
-        document.getElementById('genIdBtn').onclick = () => document.getElementById('loginId').value = generateId();
+        document.getElementById('genIdBtn').onclick = () => {
+            document.getElementById('loginId').value = generateId();
+        };
         
         document.getElementById('loginBtn').onclick = async () => {
             const name = document.getElementById('loginName').value.trim();
@@ -1512,8 +1641,10 @@
                         <button class="send-btn" id="sendBtn" disabled>📩</button>
                     </div>
                 </div>
-            </div>`;
+            </div>
+        `;
         
+        // Инициализация 3D торта
         setTimeout(() => {
             if (window.initDetailedCake) {
                 window.initDetailedCake('cake3dMain');
