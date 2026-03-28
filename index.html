@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>GLORY | Мессенджер с подарками</title>
+    <title>GLORY | Мессенджер с уведомлениями</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -50,7 +50,7 @@
             --success: #4caf50;
             --danger: #ff5e5e;
             --warning: #ff9800;
-            --gift-gold: #ffd700;
+            --unread-badge: #ff4444;
         }
         
         body.light-theme {
@@ -127,107 +127,6 @@
             background: var(--bg-input);
             color: var(--text-primary);
             border: 1px solid var(--border-color);
-        }
-        
-        .gift-btn {
-            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
-            animation: pulse 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); box-shadow: 0 0 20px rgba(255,107,107,0.6); }
-        }
-        
-        .gift-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .gift-card {
-            background: var(--bg-secondary);
-            border-radius: 48px;
-            padding: 30px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            animation: slideUp 0.4s ease;
-        }
-        
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        .gift-item {
-            background: linear-gradient(135deg, #ffd700, #ffb347);
-            border-radius: 24px;
-            padding: 20px;
-            margin: 15px 0;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .gift-item:active {
-            transform: scale(0.98);
-        }
-        
-        .gift-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 15px;
-        }
-        
-        .gift-action-btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 30px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        .accept-btn {
-            background: var(--success);
-            color: white;
-        }
-        
-        .decline-btn {
-            background: var(--danger);
-            color: white;
-        }
-        
-        .cake-message {
-            background: linear-gradient(135deg, #ffd89b, #c7e9fb);
-            border-radius: 20px;
-            padding: 12px;
-            text-align: center;
-        }
-        
-        .confetti {
-            position: fixed;
-            pointer-events: none;
-            z-index: 3000;
-            animation: fall linear forwards;
-        }
-        
-        @keyframes fall {
-            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
         
         .contacts-panel {
@@ -448,6 +347,7 @@
             border-radius: 12px;
             cursor: pointer;
             margin-bottom: 2px;
+            position: relative;
         }
         
         .chat-item.active {
@@ -464,6 +364,7 @@
             background: var(--accent-color);
             color: white;
             font-size: 1.2rem;
+            position: relative;
         }
         
         .chat-info {
@@ -475,6 +376,15 @@
             color: var(--text-primary);
         }
         
+        .chat-preview {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+        }
+        
         .chat-id-hidden {
             font-size: 0.65rem;
             color: var(--text-secondary);
@@ -483,6 +393,17 @@
             padding: 2px 6px;
             background: var(--bg-input);
             border-radius: 12px;
+        }
+        
+        .unread-badge {
+            background: var(--unread-badge);
+            color: white;
+            border-radius: 20px;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            min-width: 20px;
+            text-align: center;
         }
         
         .delete-chat-btn {
@@ -590,23 +511,13 @@
             color: var(--text-secondary);
         }
         
-        .gift-chat-btn {
-            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
-            border: none;
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            color: white;
-        }
-        
         .msg-input {
             flex: 1;
             padding: 12px 16px;
             background: var(--bg-input);
             border: 1px solid var(--border-color);
             border-radius: 24px;
+            font-size: 0.95rem;
             color: var(--text-primary);
             outline: none;
             resize: none;
@@ -638,9 +549,28 @@
             animation: fadeOut 2s ease forwards;
         }
         
+        .notification-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--accent-color);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            z-index: 1500;
+            animation: slideIn 0.3s ease, fadeOut 2s ease 1.7s forwards;
+            pointer-events: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
         @keyframes fadeOut {
             0%, 70% { opacity: 1; }
-            100% { opacity: 0; }
+            100% { opacity: 0; visibility: hidden; }
         }
         
         .login-screen {
@@ -737,6 +667,28 @@
             text-align: left;
         }
         
+        .profile-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .profile-card {
+            background: var(--bg-secondary);
+            border-radius: 32px;
+            padding: 32px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
         @media (max-width: 768px) {
             .contacts-panel, .chat-panel {
                 position: fixed;
@@ -748,6 +700,7 @@
             }
             .chat-panel { z-index: 20; }
             .message { max-width: 85%; }
+            .notification-toast { top: 10px; right: 10px; left: 10px; text-align: center; }
         }
     </style>
 </head>
@@ -782,76 +735,29 @@
         const mainLight = new THREE.DirectionalLight(0xfff5e6, 1);
         mainLight.position.set(2, 3, 2);
         scene.add(mainLight);
-        const fillLight = new THREE.PointLight(0xffaa88, 0.5);
-        fillLight.position.set(1, 2, 2);
-        scene.add(fillLight);
         
-        const bottomCake = new THREE.Mesh(
-            new THREE.CylinderGeometry(1.3, 1.3, 0.45, 48),
-            new THREE.MeshStandardMaterial({ color: 0xd4a373, roughness: 0.2 })
-        );
+        const bottomCake = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.3, 0.45, 48), new THREE.MeshStandardMaterial({ color: 0xd4a373, roughness: 0.2 }));
         bottomCake.position.y = 0.225;
         scene.add(bottomCake);
         
-        const bottomIcing = new THREE.Mesh(
-            new THREE.CylinderGeometry(1.35, 1.35, 0.12, 48),
-            new THREE.MeshStandardMaterial({ color: 0xf8e8d0 })
-        );
-        bottomIcing.position.y = 0.45;
-        scene.add(bottomIcing);
-        
-        const middleCake = new THREE.Mesh(
-            new THREE.CylinderGeometry(1.0, 1.0, 0.4, 48),
-            new THREE.MeshStandardMaterial({ color: 0xb5835a })
-        );
+        const middleCake = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, 0.4, 48), new THREE.MeshStandardMaterial({ color: 0xb5835a }));
         middleCake.position.y = 0.75;
         scene.add(middleCake);
         
-        const middleIcing = new THREE.Mesh(
-            new THREE.CylinderGeometry(1.05, 1.05, 0.1, 48),
-            new THREE.MeshStandardMaterial({ color: 0xf8e8d0 })
-        );
-        middleIcing.position.y = 0.95;
-        scene.add(middleIcing);
-        
-        const topCake = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.7, 0.7, 0.38, 48),
-            new THREE.MeshStandardMaterial({ color: 0x9c6e42 })
-        );
+        const topCake = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.7, 0.38, 48), new THREE.MeshStandardMaterial({ color: 0x9c6e42 }));
         topCake.position.y = 1.2;
         scene.add(topCake);
         
-        const topIcing = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.75, 0.75, 0.1, 48),
-            new THREE.MeshStandardMaterial({ color: 0xf8e8d0 })
-        );
-        topIcing.position.y = 1.4;
-        scene.add(topIcing);
-        
         const candlePositions = [-0.35, 0, 0.35];
         candlePositions.forEach((x, idx) => {
-            const candle = new THREE.Mesh(
-                new THREE.CylinderGeometry(0.09, 0.1, 0.45, 12),
-                new THREE.MeshStandardMaterial({ color: idx === 1 ? 0xffaa66 : 0xff6b6b })
-            );
+            const candle = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.1, 0.45, 12), new THREE.MeshStandardMaterial({ color: idx === 1 ? 0xffaa66 : 0xff6b6b }));
             candle.position.set(x, 1.65, 0);
             scene.add(candle);
             
-            const flame = new THREE.Mesh(
-                new THREE.ConeGeometry(0.07, 0.15, 8),
-                new THREE.MeshStandardMaterial({ color: 0xffaa44, emissive: 0xff4400, emissiveIntensity: 0.6 })
-            );
+            const flame = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.15, 8), new THREE.MeshStandardMaterial({ color: 0xffaa44, emissive: 0xff4400, emissiveIntensity: 0.6 }));
             flame.position.set(x, 1.88, 0);
             scene.add(flame);
         });
-        
-        const berryMat = new THREE.MeshStandardMaterial({ color: 0xdd2244 });
-        for (let i = 0; i < 8; i++) {
-            const berry = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), berryMat);
-            const angle = (i / 8) * Math.PI * 2;
-            berry.position.set(Math.cos(angle) * 0.55, 1.48, Math.sin(angle) * 0.55);
-            scene.add(berry);
-        }
         
         let angle = 0;
         function animate() {
@@ -884,26 +790,31 @@
 
     let currentUser = null;
     let activeChat = null;
+    let activeChatType = null;
     let contacts = [];
     let groups = [];
     let channels = [];
     let currentMessagesRef = null;
     let currentTab = 'chats';
-    let userInventory = { cakes: 0, pendingGifts: [] };
+    let unreadCounts = {}; // { chatId: count }
+    let lastReadTimes = {}; // { chatId: timestamp }
     
     const root = document.getElementById('root');
     
-    function createConfetti() {
-        for (let i = 0; i < 150; i++) {
-            const conf = document.createElement('div');
-            conf.className = 'confetti';
-            conf.style.left = Math.random() * window.innerWidth + 'px';
-            conf.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 60%)`;
-            conf.style.width = Math.random() * 8 + 4 + 'px';
-            conf.style.height = Math.random() * 8 + 4 + 'px';
-            conf.style.animationDuration = Math.random() * 2 + 1 + 's';
-            document.body.appendChild(conf);
-            setTimeout(() => conf.remove(), 2000);
+    function showNotification(title, body) {
+        if (Notification.permission === 'granted') {
+            new Notification(title, { body: body, icon: '🎂' });
+        }
+        const toast = document.createElement('div');
+        toast.className = 'notification-toast';
+        toast.innerHTML = `<strong>${title}</strong><br>${body}`;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
+    }
+    
+    async function requestNotificationPermission() {
+        if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+            await Notification.requestPermission();
         }
     }
     
@@ -928,6 +839,16 @@
         return Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
     }
     
+    function getDialogId(uid1, uid2) {
+        return [uid1, uid2].sort().join('_');
+    }
+    
+    function getPathForChat(chatId, type) {
+        if (type === 'user') return `messages/${getDialogId(currentUser.id, chatId)}`;
+        if (type === 'group') return `groupMessages/${chatId}`;
+        return `channelMessages/${chatId}`;
+    }
+    
     async function userExists(uid) {
         const snap = await db.ref(`users/${uid}`).once('value');
         return snap.exists();
@@ -936,7 +857,6 @@
     async function registerUser(uid, name, password) {
         await db.ref(`users/${uid}`).set({
             id: uid, name, password: hashPassword(password),
-            inventory: { cakes: 0, pendingGifts: [] },
             createdAt: Date.now()
         });
         return true;
@@ -956,19 +876,11 @@
         return snap.val() || uid;
     }
     
-    async function loadInventory() {
-        const snap = await db.ref(`users/${currentUser.id}/inventory`).once('value');
-        userInventory = snap.val() || { cakes: 0, pendingGifts: [] };
-    }
-    
-    async function saveInventory() {
-        await db.ref(`users/${currentUser.id}/inventory`).set(userInventory);
-    }
-    
+    // Группы
     async function createGroup(name, description) {
         const groupId = generateChatId();
         await db.ref(`groups/${groupId}`).set({
-            id: groupId, name, description, creator: currentUser.id, members: [currentUser.id]
+            id: groupId, name, description, creator: currentUser.id, members: [currentUser.id], createdAt: Date.now()
         });
         await db.ref(`userGroups/${currentUser.id}/${groupId}`).set(true);
         return groupId;
@@ -977,7 +889,7 @@
     async function createChannel(name, description) {
         const channelId = generateChatId();
         await db.ref(`channels/${channelId}`).set({
-            id: channelId, name, description, creator: currentUser.id, members: [currentUser.id]
+            id: channelId, name, description, creator: currentUser.id, members: [currentUser.id], createdAt: Date.now()
         });
         await db.ref(`userChannels/${currentUser.id}/${channelId}`).set(true);
         return channelId;
@@ -986,6 +898,11 @@
     async function joinGroup(groupId) {
         const group = await db.ref(`groups/${groupId}`).once('value');
         if (group.exists()) {
+            const members = group.val().members || [];
+            if (!members.includes(currentUser.id)) {
+                members.push(currentUser.id);
+                await db.ref(`groups/${groupId}/members`).set(members);
+            }
             await db.ref(`userGroups/${currentUser.id}/${groupId}`).set(true);
             return true;
         }
@@ -995,220 +912,93 @@
     async function joinChannel(channelId) {
         const channel = await db.ref(`channels/${channelId}`).once('value');
         if (channel.exists()) {
+            const members = channel.val().members || [];
+            if (!members.includes(currentUser.id)) {
+                members.push(currentUser.id);
+                await db.ref(`channels/${channelId}/members`).set(members);
+            }
             await db.ref(`userChannels/${currentUser.id}/${channelId}`).set(true);
             return true;
         }
         return false;
     }
     
-    async function sendGift(toUserId) {
-        if (userInventory.cakes < 1) {
-            alert('У вас нет тортиков! Получите подарок в главном меню 🎂');
-            return false;
-        }
-        
-        const giftId = Date.now() + '_' + Math.random().toString(36).substr(2, 8);
-        const giftData = {
-            id: giftId,
-            fromId: currentUser.id,
-            fromName: currentUser.name,
-            timestamp: Date.now(),
-            status: 'pending'
-        };
-        
-        await db.ref(`users/${toUserId}/inventory/pendingGifts`).push(giftData);
+    async function sendMessage() {
+        const input = document.getElementById('messageInput');
+        if (!input || !input.value.trim() || !activeChat || !activeChatType) return;
         
         const message = {
-            id: giftId,
-            type: 'gift_request',
+            id: Date.now() + '_' + Math.random().toString(36).substr(2, 8),
+            text: input.value.trim(),
             fromId: currentUser.id,
             fromName: currentUser.name,
-            giftId: giftId,
             timestamp: Date.now(),
-            timeStr: new Date().toLocaleTimeString(),
-            status: 'pending'
+            timeStr: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            type: 'text'
         };
         
-        const path = `messages/${getDialogId(currentUser.id, toUserId)}`;
+        const path = getPathForChat(activeChat, activeChatType);
         await db.ref(path).push(message);
+        input.value = '';
+        input.style.height = 'auto';
         
-        userInventory.cakes--;
-        await saveInventory();
-        
-        return true;
+        // Обновляем время последнего прочитанного
+        lastReadTimes[`${activeChatType}_${activeChat}`] = Date.now();
+        localStorage.setItem('glory_lastRead', JSON.stringify(lastReadTimes));
+        unreadCounts[`${activeChatType}_${activeChat}`] = 0;
+        renderAllChats();
     }
     
-    async function acceptGift(giftId, fromUserId) {
-        const senderSnap = await db.ref(`users/${fromUserId}/inventory`).once('value');
-        const senderInv = senderSnap.val() || { cakes: 0 };
-        senderInv.cakes = Math.max(0, (senderInv.cakes || 0) - 1);
-        await db.ref(`users/${fromUserId}/inventory`).set(senderInv);
-        
-        userInventory.cakes = (userInventory.cakes || 0) + 2;
-        userInventory.pendingGifts = (userInventory.pendingGifts || []).filter(g => g.id !== giftId);
-        await saveInventory();
-        
-        const path = `messages/${getDialogId(currentUser.id, fromUserId)}`;
-        const msgsSnap = await db.ref(path).once('value');
-        msgsSnap.forEach(child => {
-            const msg = child.val();
-            if (msg.giftId === giftId) {
-                db.ref(`${path}/${child.key}/status`).set('accepted');
-            }
-        });
-        
-        createConfetti();
-        updateCakeCountDisplay();
-        return true;
+    function markChatAsRead(chatId, type) {
+        const key = `${type}_${chatId}`;
+        lastReadTimes[key] = Date.now();
+        unreadCounts[key] = 0;
+        localStorage.setItem('glory_lastRead', JSON.stringify(lastReadTimes));
+        renderAllChats();
     }
     
-    async function declineGift(giftId, fromUserId) {
-        userInventory.pendingGifts = (userInventory.pendingGifts || []).filter(g => g.id !== giftId);
-        await saveInventory();
-        
-        const path = `messages/${getDialogId(currentUser.id, fromUserId)}`;
-        const msgsSnap = await db.ref(path).once('value');
-        msgsSnap.forEach(child => {
-            const msg = child.val();
-            if (msg.giftId === giftId) {
-                db.ref(`${path}/${child.key}/status`).set('declined');
-            }
-        });
+    function showIdPopup(id) {
+        const popup = document.createElement('div');
+        popup.className = 'id-modal';
+        popup.textContent = `🆔 ${id}`;
+        document.body.appendChild(popup);
+        setTimeout(() => popup.remove(), 2000);
     }
     
-    function getDialogId(uid1, uid2) {
-        return [uid1, uid2].sort().join('_');
+    function showMenu() {
+        document.querySelector('.menu-screen')?.classList.remove('hide');
+        document.querySelector('.contacts-panel')?.classList.add('hide');
+        document.querySelector('.chat-panel')?.classList.add('hide');
     }
     
-    function show3DCakeModal(title, onConfirm, showButton = true, buttonText = "🎁 ПОЛУЧИТЬ ПОДАРОК") {
-        const modal = document.createElement('div');
-        modal.className = 'gift-modal';
-        const uniqueId = 'cake3d_' + Date.now();
-        modal.innerHTML = `
-            <div class="gift-card">
-                <div id="${uniqueId}" class="cake-3d-container" style="width:220px; height:220px; margin:0 auto;"></div>
-                <h3>${title}</h3>
-                <p style="color: var(--text-secondary); margin:10px 0;">🎂 Детализированный 3D торт 🎂</p>
-                ${showButton ? `<div class="gift-item" id="claimGiftBtn"><h4>${buttonText}</h4><p>С выпуском 28.03.26! От разработчика ❤️</p></div>` : ''}
-                <p style="font-size:0.8rem; margin-top:15px; color:var(--text-muted);">🎂 С выпуском 28.03.26!<br>От разработчика с любовью ❤️</p>
-                <button class="menu-btn secondary" style="margin-top:15px;" id="closeGiftModal">Закрыть</button>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        
-        setTimeout(() => {
-            if (window.initDetailedCake) {
-                window.initDetailedCake(uniqueId);
-            }
-        }, 100);
-        
-        if (showButton) {
-            document.getElementById('claimGiftBtn').onclick = async () => {
-                const result = await onConfirm();
-                if (result !== false) {
-                    modal.remove();
-                    updateCakeCountDisplay();
-                    const giftBtn = document.getElementById('getGiftBtn');
-                    if (giftBtn && userInventory.cakes >= 1) giftBtn.style.display = 'none';
-                }
-            };
-        }
-        
-        document.getElementById('closeGiftModal').onclick = () => modal.remove();
+    function showContacts() {
+        document.querySelector('.menu-screen')?.classList.add('hide');
+        document.querySelector('.contacts-panel')?.classList.remove('hide');
+        document.querySelector('.chat-panel')?.classList.add('hide');
     }
     
-    function showGiftRequestModal(giftId, fromId, fromName) {
-        const modal = document.createElement('div');
-        modal.className = 'gift-modal';
-        const uniqueId = 'cake3d_' + Date.now();
-        modal.innerHTML = `
-            <div class="gift-card">
-                <div id="${uniqueId}" class="cake-3d-container" style="width:220px; height:220px; margin:0 auto;"></div>
-                <h3>🎁 Вам дарят подарок!</h3>
-                <p style="color: var(--text-secondary); margin:10px 0;">${escapeHtml(fromName)} дарит вам праздничный торт! 🎂</p>
-                <div class="gift-actions">
-                    <button class="gift-action-btn accept-btn" id="acceptGiftBtn">✅ Взять (+2 тортика)</button>
-                    <button class="gift-action-btn decline-btn" id="declineGiftBtn">❌ Отказаться</button>
-                </div>
-                <p style="font-size:0.7rem; margin-top:15px;">Если примете — у дарителя убавится 1 торт, у вас появится 2 торта!</p>
-                <button class="menu-btn secondary" style="margin-top:15px;" id="closeModal">Закрыть</button>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        
-        setTimeout(() => {
-            if (window.initDetailedCake) {
-                window.initDetailedCake(uniqueId);
-            }
-        }, 100);
-        
-        document.getElementById('acceptGiftBtn').onclick = async () => {
-            await acceptGift(giftId, fromId);
-            modal.remove();
-            updateCakeCountDisplay();
-        };
-        
-        document.getElementById('declineGiftBtn').onclick = async () => {
-            await declineGift(giftId, fromId);
-            modal.remove();
-        };
-        
-        document.getElementById('closeModal').onclick = () => modal.remove();
+    function showChat() {
+        document.querySelector('.contacts-panel')?.classList.add('hide');
+        document.querySelector('.chat-panel')?.classList.remove('hide');
     }
     
-    async function getFreeGift() {
-        if (userInventory.cakes >= 1) {
-            alert('🎁 У вас уже есть тортик! Вы можете отправить его другу в чате.');
-            return false;
-        }
-        userInventory.cakes = (userInventory.cakes || 0) + 1;
-        await saveInventory();
-        createConfetti();
-        alert('🎉 Поздравляем! Вы получили праздничный торт! 🎂\nТеперь вы можете отправить его другу!');
-        return true;
-    }
-    
-    function updateCakeCountDisplay() {
-        const cakeCountSpan = document.getElementById('cakeCountDisplay');
-        if (cakeCountSpan) cakeCountSpan.textContent = userInventory.cakes || 0;
-        const profileCakeSpan = document.getElementById('profileCakeCount');
-        if (profileCakeSpan) profileCakeSpan.textContent = userInventory.cakes || 0;
-        
-        const giftBtn = document.getElementById('getGiftBtn');
-        if (giftBtn) {
-            if (userInventory.cakes >= 1) {
-                giftBtn.style.display = 'none';
+    function setTheme(theme) {
+        document.body.className = theme + '-theme';
+        localStorage.setItem('glory_theme', theme);
+        document.querySelectorAll('.theme-option').forEach(opt => {
+            if (opt.innerText.includes(theme === 'dark' ? 'Тёмная' : 'Светлая')) {
+                opt.classList.add('active');
             } else {
-                giftBtn.style.display = 'block';
+                opt.classList.remove('active');
             }
-        }
-    }
-    
-    async function sendGiftToChat() {
-        if (!activeChat) {
-            alert('Сначала выберите чат');
-            return;
-        }
-        if (userInventory.cakes < 1) {
-            alert('У вас нет тортиков! Получите подарок в главном меню 🎂');
-            return;
-        }
-        
-        show3DCakeModal('🎁 Отправить подарок', async () => {
-            const success = await sendGift(activeChat);
-            if (success) {
-                alert('🎁 Подарок отправлен! Ожидайте, пока получатель примет его.');
-                updateCakeCountDisplay();
-            }
-            return success;
-        }, true, "📤 ОТПРАВИТЬ ПОДАРОК");
+        });
     }
     
     function loadMessages() {
         if (currentMessagesRef) currentMessagesRef.off();
-        if (!activeChat) return;
+        if (!activeChat || !activeChatType) return;
         
-        const path = `messages/${getDialogId(currentUser.id, activeChat)}`;
+        const path = getPathForChat(activeChat, activeChatType);
         currentMessagesRef = db.ref(path);
         
         currentMessagesRef.on('value', (snapshot) => {
@@ -1227,49 +1017,72 @@
             let html = '';
             for (const msg of messages) {
                 const isOut = msg.fromId === currentUser.id;
-                
-                if (msg.type === 'gift_request') {
-                    if (msg.status === 'accepted') {
-                        html += `<div class="message ${isOut ? 'out' : 'in'}">
-                            <div class="message-sender">${isOut ? 'Вы' : escapeHtml(msg.fromName)}</div>
-                            <div class="cake-message">🎂 ПОДАРОК ПРИНЯТ! 🎉<br>Получатель получил +2 тортика!</div>
-                            <div class="message-time">${msg.timeStr}</div>
-                        </div>`;
-                    } else if (msg.status === 'declined') {
-                        html += `<div class="message ${isOut ? 'out' : 'in'}">
-                            <div class="message-sender">${isOut ? 'Вы' : escapeHtml(msg.fromName)}</div>
-                            <div class="cake-message" style="background:#ffcccc;">❌ ПОДАРОК ОТКЛОНЕН</div>
-                            <div class="message-time">${msg.timeStr}</div>
-                        </div>`;
-                    } else {
-                        html += `<div class="message ${isOut ? 'out' : 'in'}">
-                            <div class="message-sender">${isOut ? 'Вы' : escapeHtml(msg.fromName)}</div>
-                            <div class="cake-message">
-                                <span>🎂🎁</span>
-                                <div><strong>Вам дарят подарок!</strong></div>
-                                ${!isOut ? `<button class="gift-action-btn accept-btn" style="margin-top:10px; padding:8px 16px;" onclick="showGiftRequestModal('${msg.giftId}', '${msg.fromId}', '${escapeHtml(msg.fromName)}')">🎁 Посмотреть подарок</button>` : '<div>Ожидание ответа...</div>'}
-                            </div>
-                            <div class="message-time">${msg.timeStr}</div>
-                        </div>`;
-                    }
-                } else {
-                    html += `<div class="message ${isOut ? 'out' : 'in'}">
-                        <div class="message-sender">${isOut ? 'Вы' : escapeHtml(msg.fromName)}</div>
+                html += `
+                    <div class="message ${isOut ? 'out' : 'in'}">
+                        ${activeChatType !== 'user' ? `<div class="message-sender">${escapeHtml(msg.fromName)}</div>` : ''}
                         <div>${escapeHtml(msg.text || '')}</div>
                         <div class="message-time">${msg.timeStr}</div>
-                    </div>`;
-                }
+                    </div>
+                `;
             }
             container.innerHTML = html;
             setTimeout(() => container.scrollTop = container.scrollHeight, 100);
         });
+        
+        // Помечаем чат как прочитанный
+        markChatAsRead(activeChat, activeChatType);
     }
     
-    window.showGiftRequestModal = showGiftRequestModal;
-    
-    async function loadContactsAndChats() {
+    async function loadAllChats() {
         if (!currentUser) return;
         
+        // Загружаем сохраненные времена последнего прочтения
+        const saved = localStorage.getItem('glory_lastRead');
+        if (saved) {
+            try {
+                lastReadTimes = JSON.parse(saved);
+            } catch(e) {}
+        }
+        
+        // Подписываемся на все сообщения для подсчета непрочитанных
+        const processMessages = async (path, chatId, type, name) => {
+            const key = `${type}_${chatId}`;
+            const lastRead = lastReadTimes[key] || 0;
+            let unread = 0;
+            const snapshot = await db.ref(path).once('value');
+            snapshot.forEach(child => {
+                const msg = child.val();
+                if (msg.fromId !== currentUser.id && msg.timestamp > lastRead) {
+                    unread++;
+                }
+            });
+            if (unread > 0) {
+                unreadCounts[key] = unread;
+                // Показываем уведомление только если чат не активен
+                if (activeChat !== chatId && !document.querySelector('.chat-panel:not(.hide)')) {
+                    showNotification(`📩 Новое сообщение`, `${name}: ${msg.text?.substring(0, 30) || 'сообщение'}`);
+                }
+            }
+            renderAllChats();
+        };
+        
+        // Следим за новыми сообщениями в реальном времени
+        const watchMessages = (path, chatId, type, name) => {
+            const key = `${type}_${chatId}`;
+            const lastRead = lastReadTimes[key] || 0;
+            db.ref(path).on('child_added', (snapshot) => {
+                const msg = snapshot.val();
+                if (msg.fromId !== currentUser.id && msg.timestamp > (lastReadTimes[key] || 0)) {
+                    unreadCounts[key] = (unreadCounts[key] || 0) + 1;
+                    renderAllChats();
+                    if (activeChat !== chatId && !document.querySelector('.chat-panel:not(.hide)')) {
+                        showNotification(`📩 ${name}`, msg.text?.substring(0, 50) || 'новое сообщение');
+                    }
+                }
+            });
+        };
+        
+        // Личные чаты
         db.ref('messages').on('value', async (snapshot) => {
             const contactsMap = new Map();
             snapshot.forEach(dialog => {
@@ -1279,49 +1092,46 @@
                     contactsMap.set(otherId, true);
                 }
             });
-            
             contacts = [];
             for (const cid of contactsMap.keys()) {
-                contacts.push({ id: cid, name: await getUserName(cid), type: 'user' });
+                const name = await getUserName(cid);
+                contacts.push({ id: cid, name: name, type: 'user' });
+                const path = `messages/${getDialogId(currentUser.id, cid)}`;
+                watchMessages(path, cid, 'user', name);
             }
             renderAllChats();
         });
         
+        // Группы
         db.ref(`userGroups/${currentUser.id}`).on('value', async (snapshot) => {
             groups = [];
             const groupIds = snapshot.val() || {};
             for (const groupId of Object.keys(groupIds)) {
                 const groupSnap = await db.ref(`groups/${groupId}`).once('value');
                 if (groupSnap.exists()) {
-                    groups.push({ ...groupSnap.val(), type: 'group' });
+                    const group = groupSnap.val();
+                    groups.push({ id: groupId, name: group.name, type: 'group' });
+                    const path = `groupMessages/${groupId}`;
+                    watchMessages(path, groupId, 'group', group.name);
                 }
             }
             renderAllChats();
         });
         
+        // Каналы
         db.ref(`userChannels/${currentUser.id}`).on('value', async (snapshot) => {
             channels = [];
             const channelIds = snapshot.val() || {};
             for (const channelId of Object.keys(channelIds)) {
                 const channelSnap = await db.ref(`channels/${channelId}`).once('value');
                 if (channelSnap.exists()) {
-                    channels.push({ ...channelSnap.val(), type: 'channel' });
+                    const channel = channelSnap.val();
+                    channels.push({ id: channelId, name: channel.name, type: 'channel' });
+                    const path = `channelMessages/${channelId}`;
+                    watchMessages(path, channelId, 'channel', channel.name);
                 }
             }
             renderAllChats();
-        });
-        
-        db.ref(`users/${currentUser.id}/inventory/pendingGifts`).on('value', (snapshot) => {
-            const pending = [];
-            snapshot.forEach(child => {
-                pending.push({ id: child.key, ...child.val() });
-            });
-            userInventory.pendingGifts = pending;
-            
-            if (pending.length > 0 && !document.querySelector('.gift-modal')) {
-                const latest = pending[pending.length - 1];
-                showGiftRequestModal(latest.id, latest.fromId, latest.fromName);
-            }
         });
     }
     
@@ -1331,48 +1141,62 @@
         
         let html = '';
         if (currentTab === 'chats') {
+            // Личные чаты
             if (contacts.length > 0) {
                 html += '<div class="section-title">💬 ЛИЧНЫЕ ЧАТЫ</div>';
                 for (const contact of contacts) {
-                    const isActive = (activeChat === contact.id);
+                    const isActive = (activeChat === contact.id && activeChatType === 'user');
+                    const key = `user_${contact.id}`;
+                    const unread = unreadCounts[key] || 0;
                     html += `
                         <div class="chat-item ${isActive ? 'active' : ''}" onclick="selectContact('${contact.id}', 'user')">
                             <div class="chat-avatar">${escapeHtml(contact.name.charAt(0).toUpperCase())}</div>
                             <div class="chat-info">
                                 <div class="chat-name">${escapeHtml(contact.name)}</div>
-                                <div class="chat-id-hidden" onclick="event.stopPropagation(); showIdPopup('${contact.id}')">🆔 показать ID</div>
+                                <div class="chat-id-hidden" onclick="event.stopPropagation(); showIdPopup('${contact.id}')">🆔 ID</div>
                             </div>
+                            ${unread > 0 ? `<div class="unread-badge">${unread}</div>` : ''}
                             <button class="delete-chat-btn" onclick="event.stopPropagation(); deleteContact('${contact.id}')">🗑️</button>
                         </div>
                     `;
                 }
             }
             
+            // Группы
             if (groups.length > 0) {
                 html += '<div class="section-title">👥 ГРУППЫ</div>';
                 for (const group of groups) {
+                    const isActive = (activeChat === group.id && activeChatType === 'group');
+                    const key = `group_${group.id}`;
+                    const unread = unreadCounts[key] || 0;
                     html += `
-                        <div class="chat-item" onclick="selectContact('${group.id}', 'group')">
+                        <div class="chat-item ${isActive ? 'active' : ''}" onclick="selectContact('${group.id}', 'group')">
                             <div class="chat-avatar">👥</div>
                             <div class="chat-info">
                                 <div class="chat-name">${escapeHtml(group.name)}</div>
                                 <div class="chat-id-hidden" onclick="event.stopPropagation(); showIdPopup('${group.id}')">🆔 ID</div>
                             </div>
+                            ${unread > 0 ? `<div class="unread-badge">${unread}</div>` : ''}
                         </div>
                     `;
                 }
             }
             
+            // Каналы
             if (channels.length > 0) {
                 html += '<div class="section-title">📢 КАНАЛЫ</div>';
                 for (const channel of channels) {
+                    const isActive = (activeChat === channel.id && activeChatType === 'channel');
+                    const key = `channel_${channel.id}`;
+                    const unread = unreadCounts[key] || 0;
                     html += `
-                        <div class="chat-item" onclick="selectContact('${channel.id}', 'channel')">
+                        <div class="chat-item ${isActive ? 'active' : ''}" onclick="selectContact('${channel.id}', 'channel')">
                             <div class="chat-avatar">📢</div>
                             <div class="chat-info">
                                 <div class="chat-name">${escapeHtml(channel.name)}</div>
                                 <div class="chat-id-hidden" onclick="event.stopPropagation(); showIdPopup('${channel.id}')">🆔 ID</div>
                             </div>
+                            ${unread > 0 ? `<div class="unread-badge">${unread}</div>` : ''}
                         </div>
                     `;
                 }
@@ -1405,6 +1229,7 @@
         }
         
         activeChat = chatId;
+        activeChatType = type;
         localStorage.setItem('glory_activeChat', JSON.stringify({ id: chatId, type }));
         
         const header = document.getElementById('chatHeader');
@@ -1413,24 +1238,29 @@
             header.innerHTML = `
                 <button class="back-to-contacts-btn" id="backToContactsBtn">✕</button>
                 <div class="chat-info-header" onclick="showIdPopup('${chatId}')">
-                    <div class="chat-name-header">${typeIcon} ${escapeHtml(name)}<span class="chat-id-clickable" style="font-size:0.6rem; margin-left:8px; background:var(--bg-input); padding:4px 8px; border-radius:20px;">🆔 ID</span></div>
+                    <div class="chat-name-header">${typeIcon} ${escapeHtml(name)}</div>
                 </div>
             `;
             document.getElementById('backToContactsBtn').onclick = () => showContacts();
         }
         
+        // Помечаем как прочитанное
+        markChatAsRead(chatId, type);
+        
         loadMessages();
         showChat();
         document.getElementById('messageInput').disabled = false;
         document.getElementById('sendBtn').disabled = false;
-        document.getElementById('giftChatBtn').disabled = false;
+        document.getElementById('attachBtn').disabled = false;
+        document.getElementById('messageInput').focus();
     };
     
     async function deleteContact(contactId) {
         if (confirm('Удалить этот контакт?')) {
             contacts = contacts.filter(c => c.id !== contactId);
-            if (activeChat === contactId) {
+            if (activeChat === contactId && activeChatType === 'user') {
                 activeChat = null;
+                activeChatType = null;
                 document.getElementById('messagesContainer').innerHTML = '<div class="empty-chat">💬 Выберите чат</div>';
                 showContacts();
             }
@@ -1472,7 +1302,7 @@
         const modal = document.createElement('div');
         modal.className = 'profile-modal';
         modal.innerHTML = `
-            <div class="profile-card" style="background:var(--bg-secondary); border-radius:32px; padding:32px; width:90%; max-width:400px;">
+            <div class="profile-card">
                 <h3 style="color:var(--text-primary); margin-bottom:16px;">${type === 'group' ? 'Создать группу' : 'Создать канал'}</h3>
                 <input type="text" id="createName" placeholder="Название" style="width:100%; padding:12px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:12px; color:var(--text-primary); margin-bottom:12px;">
                 <input type="text" id="createDesc" placeholder="Описание" style="width:100%; padding:12px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:12px; color:var(--text-primary); margin-bottom:12px;">
@@ -1507,7 +1337,7 @@
         const modal = document.createElement('div');
         modal.className = 'profile-modal';
         modal.innerHTML = `
-            <div class="profile-card" style="background:var(--bg-secondary); border-radius:32px; padding:32px; width:90%; max-width:400px;">
+            <div class="profile-card">
                 <h3 style="color:var(--text-primary); margin-bottom:16px;">${type === 'group' ? 'Вступить в группу' : 'Подписаться на канал'}</h3>
                 <input type="text" id="joinId" placeholder="Введите ID" style="width:100%; padding:12px; background:var(--bg-input); border:1px solid var(--border-color); border-radius:12px; color:var(--text-primary); margin-bottom:12px;">
                 <div style="display:flex; gap:12px; margin-top:16px;">
@@ -1533,63 +1363,6 @@
             }
         };
         document.getElementById('cancelJoin').onclick = () => modal.remove();
-    }
-    
-    function showIdPopup(id) {
-        const popup = document.createElement('div');
-        popup.className = 'id-modal';
-        popup.textContent = `🆔 ${id}`;
-        document.body.appendChild(popup);
-        setTimeout(() => popup.remove(), 2000);
-    }
-    
-    function showMenu() {
-        document.querySelector('.menu-screen')?.classList.remove('hide');
-        document.querySelector('.contacts-panel')?.classList.add('hide');
-        document.querySelector('.chat-panel')?.classList.add('hide');
-    }
-    
-    function showContacts() {
-        document.querySelector('.menu-screen')?.classList.add('hide');
-        document.querySelector('.contacts-panel')?.classList.remove('hide');
-        document.querySelector('.chat-panel')?.classList.add('hide');
-    }
-    
-    function showChat() {
-        document.querySelector('.contacts-panel')?.classList.add('hide');
-        document.querySelector('.chat-panel')?.classList.remove('hide');
-    }
-    
-    function setTheme(theme) {
-        document.body.className = theme + '-theme';
-        localStorage.setItem('glory_theme', theme);
-        document.querySelectorAll('.theme-option').forEach(opt => {
-            if (opt.innerText.includes(theme === 'dark' ? 'Тёмная' : 'Светлая')) {
-                opt.classList.add('active');
-            } else {
-                opt.classList.remove('active');
-            }
-        });
-    }
-    
-    async function sendMessage() {
-        const input = document.getElementById('messageInput');
-        if (!input || !input.value.trim() || !activeChat) return;
-        
-        const message = {
-            id: Date.now() + '_' + Math.random().toString(36).substr(2, 8),
-            text: input.value.trim(),
-            fromId: currentUser.id,
-            fromName: currentUser.name,
-            timestamp: Date.now(),
-            timeStr: new Date().toLocaleTimeString(),
-            type: 'text'
-        };
-        
-        const path = `messages/${getDialogId(currentUser.id, activeChat)}`;
-        await db.ref(path).push(message);
-        input.value = '';
-        input.style.height = 'auto';
     }
     
     function setTab(tab) {
@@ -1642,7 +1415,7 @@
     }
     
     function showLogin() {
-        root.innerHTML = `<div class="login-screen"><div class="login-card"><h1>GLORY</h1><p>Подарки с 3D тортом 🎂</p><div class="login-tabs"><div class="login-tab active" data-tab="new" onclick="setLoginTab('new')">🆕 Регистрация</div><div class="login-tab" data-tab="existing" onclick="setLoginTab('existing')">🔑 Вход</div></div>
+        root.innerHTML = `<div class="login-screen"><div class="login-card"><h1>GLORY</h1><p>Мессенджер с уведомлениями 🔔</p><div class="login-tabs"><div class="login-tab active" data-tab="new" onclick="setLoginTab('new')">🆕 Регистрация</div><div class="login-tab" data-tab="existing" onclick="setLoginTab('existing')">🔑 Вход</div></div>
             <div id="newIdSection"><input type="text" id="loginName" placeholder="Ваше имя"><div class="id-row"><input type="text" id="loginId" readonly><button id="genIdBtn">🔄</button></div><input type="password" id="loginPassword" placeholder="Пароль (6 цифр)" maxlength="6"><div class="password-hint">🔒 6-значный цифровой пароль</div><button class="login-btn" id="loginBtn">Создать аккаунт</button></div>
             <div id="existingIdSection" style="display:none;"><input type="text" id="existingIdInput" placeholder="Ваш ID"><input type="text" id="existingNameInput" placeholder="Ваше имя"><input type="password" id="existingPasswordInput" placeholder="Пароль (6 цифр)" maxlength="6"><button class="login-btn" id="loginExistingBtn">Войти</button></div></div></div>`;
         
@@ -1659,6 +1432,7 @@
             await registerUser(uid, name, pwd);
             currentUser = { id: uid, name };
             localStorage.setItem('gloryUser', JSON.stringify(currentUser));
+            await requestNotificationPermission();
             showMessenger();
         };
         
@@ -1670,6 +1444,7 @@
             if (await verifyUser(uid, name, pwd)) {
                 currentUser = { id: uid, name };
                 localStorage.setItem('gloryUser', JSON.stringify(currentUser));
+                await requestNotificationPermission();
                 showMessenger();
             } else alert('❌ Неверные данные');
         };
@@ -1684,7 +1459,6 @@
     async function showMessenger() {
         const savedTheme = localStorage.getItem('glory_theme') || 'dark';
         document.body.className = savedTheme + '-theme';
-        await loadInventory();
         
         root.innerHTML = `
             <div class="app">
@@ -1692,12 +1466,11 @@
                     <div class="menu-card">
                         <div class="menu-logo">✨</div>
                         <div class="menu-title">GLORY</div>
-                        <div class="menu-subtitle">Подарки с 3D тортом 🎂</div>
+                        <div class="menu-subtitle">Мессенджер с уведомлениями 🔔</div>
                         <div id="cake3dMain" class="cake-3d-container" style="width:220px; height:220px; margin:0 auto 20px;"></div>
                         <div class="menu-buttons">
                             <button class="menu-btn" id="startBtn">🚀 Начать общение</button>
-                            <button class="menu-btn secondary" id="profileBtn">👤 Мой профиль <span id="cakeCountDisplay" style="margin-left:8px; background:var(--accent-color); padding:2px 8px; border-radius:20px;">${userInventory.cakes || 0} 🎂</span></button>
-                            <button class="menu-btn gift-btn" id="getGiftBtn" style="${userInventory.cakes >= 1 ? 'display:none;' : ''}">🎁 ПОЛУЧИТЬ ПОДАРОК 🎂</button>
+                            <button class="menu-btn secondary" id="profileBtn">👤 Мой профиль</button>
                         </div>
                         <p style="font-size:0.7rem; margin-top:20px; color:var(--text-muted);">🎂 С выпуском 28.03.26!<br>От разработчика с любовью ❤️</p>
                     </div>
@@ -1710,7 +1483,6 @@
                             <div class="user-info">
                                 <div class="user-name">${escapeHtml(currentUser.name)}</div>
                                 <div class="user-id-hidden" id="showMyIdBtn">🆔 показать ID</div>
-                                <div style="font-size:0.7rem; margin-top:5px;">🎂 Тортиков: <span id="profileCakeCount">${userInventory.cakes || 0}</span></div>
                             </div>
                         </div>
                         <div class="theme-selector">
@@ -1736,7 +1508,6 @@
                     <div class="messages" id="messagesContainer"><div class="empty-chat">💬 Выберите чат</div></div>
                     <div class="input-area">
                         <button class="attach-btn" id="attachBtn" disabled>📎</button>
-                        <button class="gift-chat-btn" id="giftChatBtn" disabled>🎁</button>
                         <textarea class="msg-input" id="messageInput" placeholder="Сообщение..." disabled rows="1"></textarea>
                         <button class="send-btn" id="sendBtn" disabled>📩</button>
                     </div>
@@ -1751,14 +1522,12 @@
         
         document.getElementById('startBtn').onclick = () => showContacts();
         document.getElementById('profileBtn').onclick = () => showIdPopup(currentUser.id);
-        document.getElementById('getGiftBtn').onclick = () => show3DCakeModal('🎂 ВОЛШЕБНЫЙ ТОРТ 🎂', getFreeGift, true, "🎁 ПОЛУЧИТЬ ПОДАРОК");
         document.getElementById('showMyIdBtn').onclick = () => showIdPopup(currentUser.id);
         document.getElementById('profileCard').onclick = () => showIdPopup(currentUser.id);
         document.getElementById('exitContactsBtn').onclick = () => showMenu();
         document.getElementById('closeContactsBtn').onclick = () => showMenu();
         document.getElementById('logoutBtn').onclick = () => { localStorage.clear(); location.reload(); };
         document.getElementById('sendBtn').onclick = () => sendMessage();
-        document.getElementById('giftChatBtn').onclick = () => sendGiftToChat();
         document.getElementById('attachBtn').onclick = () => alert('📎 Прикрепление фото (в разработке)');
         
         const msgInput = document.getElementById('messageInput');
@@ -1781,7 +1550,7 @@
         window.selectContact = selectContact;
         window.showIdPopup = showIdPopup;
         
-        await loadContactsAndChats();
+        await loadAllChats();
         setTab('chats');
         showMenu();
         
