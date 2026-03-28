@@ -185,6 +185,33 @@
             padding: 20px 16px;
             background: var(--bg-tertiary);
             border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+        
+        /* Крестик для выхода из контактов (для iPhone) */
+        .close-contacts-btn {
+            position: absolute;
+            top: 20px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+        
+        .close-contacts-btn:active {
+            background: var(--accent-color);
+            color: white;
+            transform: scale(0.95);
         }
 
         .user-card {
@@ -196,6 +223,7 @@
             gap: 12px;
             cursor: pointer;
             margin-bottom: 16px;
+            padding-right: 50px;
         }
 
         .user-avatar {
@@ -250,10 +278,12 @@
             gap: 8px;
             justify-content: space-between;
             margin-bottom: 12px;
+            flex-wrap: wrap;
         }
 
         .theme-option {
             flex: 1;
+            min-width: 50px;
             padding: 8px 4px;
             border-radius: 30px;
             cursor: pointer;
@@ -725,6 +755,16 @@
             .call-btn, .delete-chat-btn {
                 width: 44px;
                 height: 44px;
+            }
+            
+            .close-contacts-btn {
+                display: flex;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .close-contacts-btn {
+                display: none;
             }
         }
 
@@ -1448,6 +1488,7 @@
                 </div>
                 <div class="contacts-panel hide">
                     <div class="contacts-header">
+                        <button class="close-contacts-btn" id="closeContactsBtn">✕</button>
                         <div class="user-card" id="profileCard">
                             <div class="user-avatar" id="userAvatar">${currentUser.name.charAt(0).toUpperCase()}</div>
                             <div class="user-info">
@@ -1505,6 +1546,10 @@
         document.getElementById('exitContactsBtn')?.addEventListener('click', () => {
             showMenu();
         });
+        // Крестик для выхода из контактов (для iPhone)
+        document.getElementById('closeContactsBtn')?.addEventListener('click', () => {
+            showMenu();
+        });
         document.getElementById('backToContactsBtn')?.addEventListener('click', () => {
             showContacts();
         });
@@ -1542,16 +1587,4 @@
     
     function escapeHtml(str) {
         if (!str) return '';
-        return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
-    }
-    
-    const savedUser = localStorage.getItem('gloryUser');
-    if (savedUser && db) {
-        try {
-            currentUser = JSON.parse(savedUser);
-            showMessenger();
-        } catch(e) { showLogin(); }
-    } else { showLogin(); }
-</script>
-</body>
-</html>
+        return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>'
